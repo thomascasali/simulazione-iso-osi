@@ -1,37 +1,37 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-// Info Modal Component
+// Info Modal Component - Full screen responsive
 const InfoModal = ({ isOpen, onClose, title, children }) => {
   if (!isOpen) return null;
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 lg:p-8"
       onClick={onClose}
     >
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
+      <div className="absolute inset-0 bg-black/90 backdrop-blur-md" />
 
-      {/* Modal */}
+      {/* Modal - Full screen responsive */}
       <div
-        className="relative bg-gray-900 border border-cyan-500/50 rounded-xl p-6 max-w-2xl max-h-[80vh] overflow-y-auto shadow-2xl shadow-cyan-500/20"
+        className="relative bg-gray-900 border-2 border-cyan-500/50 rounded-2xl p-6 lg:p-10 w-full h-full max-w-6xl max-h-[90vh] overflow-y-auto shadow-2xl shadow-cyan-500/30"
         onClick={e => e.stopPropagation()}
       >
-        {/* Close button */}
+        {/* Close button - Larger for touch */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-800 transition-colors"
+          className="absolute top-4 right-4 lg:top-6 lg:right-6 text-gray-400 hover:text-white text-3xl lg:text-4xl font-bold w-12 h-12 lg:w-14 lg:h-14 flex items-center justify-center rounded-full hover:bg-gray-800 transition-colors border border-gray-700"
         >
           ×
         </button>
 
-        {/* Title */}
-        <h3 className="text-xl lg:text-2xl font-bold text-cyan-400 mb-4 pr-8">
+        {/* Title - Large responsive */}
+        <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold text-cyan-400 mb-6 lg:mb-8 pr-16">
           {title}
         </h3>
 
-        {/* Content */}
-        <div className="text-gray-300 text-base lg:text-lg space-y-4">
+        {/* Content - Large responsive text */}
+        <div className="text-gray-300 text-lg md:text-xl lg:text-2xl space-y-6 leading-relaxed">
           {children}
         </div>
       </div>
@@ -39,7 +39,7 @@ const InfoModal = ({ isOpen, onClose, title, children }) => {
   );
 };
 
-// Info Button Component
+// Info Button Component - Larger for visibility
 const InfoButton = ({ onClick, className = "" }) => {
   return (
     <button
@@ -47,7 +47,7 @@ const InfoButton = ({ onClick, className = "" }) => {
         e.stopPropagation();
         onClick();
       }}
-      className={`w-7 h-7 lg:w-8 lg:h-8 flex items-center justify-center rounded-full bg-cyan-500/20 border border-cyan-500/50 text-cyan-400 hover:bg-cyan-500/40 hover:scale-110 transition-all text-sm lg:text-base font-bold ${className}`}
+      className={`w-10 h-10 lg:w-12 lg:h-12 flex items-center justify-center rounded-full bg-cyan-500/30 border-2 border-cyan-500/70 text-cyan-400 hover:bg-cyan-500/50 hover:scale-110 transition-all text-xl lg:text-2xl font-bold shadow-lg shadow-cyan-500/20 ${className}`}
       title="Maggiori informazioni"
     >
       ℹ️
@@ -782,7 +782,7 @@ export default function ISOOSIPresentation() {
             {/* Info Modals for Slide 2 */}
             <InfoModal isOpen={activeInfo === 'utf8'} onClose={() => setActiveInfo(null)} title="Codifica UTF-8">
               <p><strong>UTF-8</strong> (Unicode Transformation Format - 8 bit) è lo standard di codifica dei caratteri più utilizzato nel web. Ogni carattere viene rappresentato da 1 a 4 byte.</p>
-              <div className="bg-black/50 p-4 rounded-lg font-mono text-sm mt-4">
+              <div className="bg-black/50 p-4 lg:p-6 rounded-lg font-mono text-base lg:text-lg mt-4 lg:mt-6">
                 <div className="text-cyan-400 mb-2">Conversione "ciao" → esadecimale:</div>
                 <div className="space-y-1">
                   <div>'c' → ASCII 99 → <span className="text-green-400">0x63</span></div>
@@ -796,47 +796,47 @@ export default function ISOOSIPresentation() {
 
             <InfoModal isOpen={activeInfo === 'signal'} onClose={() => setActiveInfo(null)} title="Signal Protocol - Crittografia End-to-End">
               <p>Il <strong>Signal Protocol</strong> è il protocollo crittografico usato da WhatsApp, Signal e altri per garantire che solo mittente e destinatario possano leggere i messaggi.</p>
-              <div className="space-y-4 mt-4">
+              <div className="space-y-4 lg:space-y-6 mt-4 lg:mt-6">
                 <div className="bg-red-500/20 p-4 rounded-lg">
                   <h4 className="font-bold text-red-400 mb-2">🔐 AES-256-GCM</h4>
-                  <p className="text-sm"><strong>Advanced Encryption Standard</strong> con chiave a 256 bit in modalità Galois/Counter Mode. Fornisce sia cifratura che autenticazione del messaggio (AEAD).</p>
+                  <p className="text-base lg:text-lg"><strong>Advanced Encryption Standard</strong> con chiave a 256 bit in modalità Galois/Counter Mode. Fornisce sia cifratura che autenticazione del messaggio (AEAD).</p>
                 </div>
                 <div className="bg-purple-500/20 p-4 rounded-lg">
                   <h4 className="font-bold text-purple-400 mb-2">🔑 Curve25519 (ECDH)</h4>
-                  <p className="text-sm"><strong>Elliptic Curve Diffie-Hellman</strong> su curva Curve25519. Permette a due parti di generare una chiave segreta condivisa senza mai trasmetterla.</p>
+                  <p className="text-base lg:text-lg"><strong>Elliptic Curve Diffie-Hellman</strong> su curva Curve25519. Permette a due parti di generare una chiave segreta condivisa senza mai trasmetterla.</p>
                 </div>
                 <div className="bg-green-500/20 p-4 rounded-lg">
                   <h4 className="font-bold text-green-400 mb-2">🔄 Double Ratchet</h4>
-                  <p className="text-sm">Algoritmo che genera una nuova chiave per ogni messaggio. Se una chiave viene compromessa, i messaggi passati e futuri rimangono sicuri (forward secrecy).</p>
+                  <p className="text-base lg:text-lg">Algoritmo che genera una nuova chiave per ogni messaggio. Se una chiave viene compromessa, i messaggi passati e futuri rimangono sicuri (forward secrecy).</p>
                 </div>
               </div>
             </InfoModal>
 
             <InfoModal isOpen={activeInfo === 'whatsapp-structure'} onClose={() => setActiveInfo(null)} title="Struttura del Messaggio WhatsApp">
               <p>Ogni messaggio WhatsApp contiene metadati oltre al contenuto criptato:</p>
-              <div className="space-y-3 mt-4">
-                <div className="bg-black/50 p-3 rounded-lg">
+              <div className="space-y-4 lg:space-y-5 mt-4 lg:mt-6">
+                <div className="bg-black/50 p-4 lg:p-5 rounded-lg">
                   <span className="text-red-400 font-bold">message_id</span>
-                  <p className="text-sm mt-1">Identificatore univoco del messaggio (32 byte random). Usato per conferme di ricezione e sincronizzazione.</p>
+                  <p className="text-base lg:text-lg mt-2">Identificatore univoco del messaggio (32 byte random). Usato per conferme di ricezione e sincronizzazione.</p>
                 </div>
-                <div className="bg-black/50 p-3 rounded-lg">
+                <div className="bg-black/50 p-4 lg:p-5 rounded-lg">
                   <span className="text-red-400 font-bold">sender_jid / recipient_jid</span>
-                  <p className="text-sm mt-1"><strong>JID</strong> = Jabber ID. Formato: <code>numero@s.whatsapp.net</code>. Il prefisso 39 è il codice Italia.</p>
+                  <p className="text-base lg:text-lg mt-2"><strong>JID</strong> = Jabber ID. Formato: <code>numero@s.whatsapp.net</code>. Il prefisso 39 è il codice Italia.</p>
                 </div>
-                <div className="bg-black/50 p-3 rounded-lg">
+                <div className="bg-black/50 p-4 lg:p-5 rounded-lg">
                   <span className="text-red-400 font-bold">timestamp</span>
-                  <p className="text-sm mt-1">Unix timestamp (secondi dal 1 gennaio 1970). Usato per ordinare i messaggi cronologicamente.</p>
+                  <p className="text-base lg:text-lg mt-2">Unix timestamp (secondi dal 1 gennaio 1970). Usato per ordinare i messaggi cronologicamente.</p>
                 </div>
-                <div className="bg-black/50 p-3 rounded-lg">
+                <div className="bg-black/50 p-4 lg:p-5 rounded-lg">
                   <span className="text-red-400 font-bold">encrypted_payload</span>
-                  <p className="text-sm mt-1">Il contenuto effettivo del messaggio cifrato con Signal Protocol.</p>
+                  <p className="text-base lg:text-lg mt-2">Il contenuto effettivo del messaggio cifrato con Signal Protocol.</p>
                 </div>
               </div>
             </InfoModal>
 
             <InfoModal isOpen={activeInfo === 'l7-output'} onClose={() => setActiveInfo(null)} title="Output del Livello 7 - Crescita dei Dati">
               <p>Il messaggio originale di <strong>4 byte</strong> ("ciao") diventa <strong>324 byte</strong> dopo l'elaborazione del livello applicazione.</p>
-              <div className="bg-black/50 p-4 rounded-lg mt-4 font-mono text-sm">
+              <div className="bg-black/50 p-4 lg:p-6 rounded-lg mt-4 lg:mt-6 font-mono text-base lg:text-lg">
                 <div className="text-cyan-400 mb-2">Composizione dei 324 byte:</div>
                 <div className="space-y-1">
                   <div>Messaggio originale: <span className="text-green-400">4 byte</span></div>
@@ -846,7 +846,7 @@ export default function ISOOSIPresentation() {
                   <div>Altri metadati: <span className="text-gray-400">~100 byte</span></div>
                 </div>
               </div>
-              <div className="bg-orange-500/20 p-3 rounded-lg mt-4 text-orange-300 text-sm">
+              <div className="bg-orange-500/20 p-4 lg:p-5 rounded-lg mt-4 lg:mt-6 text-orange-300 text-base lg:text-lg">
                 <strong>Overhead:</strong> 4 byte → 324 byte = 81× di crescita! Questo è il prezzo della sicurezza, ma per messaggi più lunghi la percentuale di overhead diminuisce significativamente.
               </div>
             </InfoModal>
@@ -953,12 +953,12 @@ export default function ISOOSIPresentation() {
               <p><strong>Protocol Buffers</strong> è un formato di serializzazione binaria sviluppato da Google. È più compatto e veloce di JSON o XML.</p>
               <div className="bg-yellow-500/20 p-4 rounded-lg mt-4">
                 <h4 className="font-bold text-yellow-400 mb-2">Struttura TLV (Tag-Length-Value)</h4>
-                <p className="text-sm">Ogni campo è codificato come: Tag (tipo campo) + Length (lunghezza) + Value (dati)</p>
+                <p className="text-base lg:text-lg">Ogni campo è codificato come: Tag (tipo campo) + Length (lunghezza) + Value (dati)</p>
                 <div className="font-mono text-xs mt-2">0A 20 [dati] = Tag 1, Length 32 byte, poi i dati</div>
               </div>
               <div className="bg-purple-500/20 p-4 rounded-lg mt-4">
                 <h4 className="font-bold text-purple-400 mb-2">TLS 1.3</h4>
-                <p className="text-sm">Cripta la comunicazione tra client e server. Usa AES-256-GCM per cifratura autenticata. L'Auth Tag di 16 byte garantisce integrità dei dati.</p>
+                <p className="text-base lg:text-lg">Cripta la comunicazione tra client e server. Usa AES-256-GCM per cifratura autenticata. L'Auth Tag di 16 byte garantisce integrità dei dati.</p>
               </div>
             </InfoModal>
 
@@ -966,7 +966,7 @@ export default function ISOOSIPresentation() {
               <p><strong>WebSocket</strong> è un protocollo che permette comunicazione full-duplex su una singola connessione TCP.</p>
               <div className="bg-cyan-500/20 p-4 rounded-lg mt-4">
                 <h4 className="font-bold text-cyan-400 mb-2">Frame WebSocket</h4>
-                <div className="text-sm space-y-1">
+                <div className="text-base lg:text-lg space-y-2">
                   <div><strong>FIN:</strong> 1 = ultimo frame del messaggio</div>
                   <div><strong>Opcode:</strong> 0x2 = dati binari</div>
                   <div><strong>MASK:</strong> 1 = client→server (obbligatorio)</div>
@@ -975,7 +975,7 @@ export default function ISOOSIPresentation() {
               </div>
               <div className="bg-green-500/20 p-4 rounded-lg mt-4">
                 <h4 className="font-bold text-green-400 mb-2">Vantaggi vs HTTP polling</h4>
-                <p className="text-sm">Connessione persistente, bassa latenza, bidirezionale. Header minimi (2-14 byte vs ~800 byte HTTP).</p>
+                <p className="text-base lg:text-lg">Connessione persistente, bassa latenza, bidirezionale. Header minimi (2-14 byte vs ~800 byte HTTP).</p>
               </div>
             </InfoModal>
           </div>
@@ -1080,7 +1080,7 @@ export default function ISOOSIPresentation() {
               <p><strong>TCP</strong> è il protocollo di trasporto affidabile di Internet. Garantisce che i dati arrivino completi, in ordine e senza errori.</p>
               <div className="bg-green-500/20 p-4 rounded-lg mt-4">
                 <h4 className="font-bold text-green-400 mb-2">Header TCP</h4>
-                <div className="text-sm space-y-1">
+                <div className="text-base lg:text-lg space-y-2">
                   <div><strong>Porte:</strong> 52431 (effimera) → 443 (HTTPS)</div>
                   <div><strong>Sequence:</strong> Posizione del primo byte nel flusso</div>
                   <div><strong>ACK:</strong> Conferma ricezione</div>
@@ -1093,14 +1093,14 @@ export default function ISOOSIPresentation() {
               <p><strong>IPv4</strong> gestisce l'indirizzamento logico e il routing. <strong>NAT</strong> traduce IP privati in pubblici.</p>
               <div className="bg-purple-500/20 p-4 rounded-lg mt-4">
                 <h4 className="font-bold text-purple-400 mb-2">Header IP</h4>
-                <div className="text-sm space-y-1">
+                <div className="text-base lg:text-lg space-y-2">
                   <div><strong>TTL:</strong> 64 = massimo hop prima dello scarto</div>
                   <div><strong>Protocol:</strong> 6 = TCP</div>
                 </div>
               </div>
               <div className="bg-orange-500/20 p-4 rounded-lg mt-4">
                 <h4 className="font-bold text-orange-400 mb-2">NAT (Network Address Translation)</h4>
-                <p className="text-sm">Il router traduce 192.168.1.100:52431 → 82.53.147.201:34567. Permette a molti dispositivi di condividere un IP pubblico.</p>
+                <p className="text-base lg:text-lg">Il router traduce 192.168.1.100:52431 → 82.53.147.201:34567. Permette a molti dispositivi di condividere un IP pubblico.</p>
               </div>
             </InfoModal>
           </div>
@@ -1198,11 +1198,11 @@ export default function ISOOSIPresentation() {
               <p>Il frame <strong>IEEE 802.11</strong> trasporta dati sul collegamento wireless verso l'Access Point.</p>
               <div className="bg-orange-500/20 p-4 rounded-lg mt-4">
                 <h4 className="font-bold text-orange-400 mb-2">Indirizzi MAC</h4>
-                <p className="text-sm">WiFi usa fino a 4 indirizzi MAC: Receiver (AP), Transmitter (telefono), Destination (router), Source.</p>
+                <p className="text-base lg:text-lg">WiFi usa fino a 4 indirizzi MAC: Receiver (AP), Transmitter (telefono), Destination (router), Source.</p>
               </div>
               <div className="bg-red-500/20 p-4 rounded-lg mt-4">
                 <h4 className="font-bold text-red-400 mb-2">WPA2-CCMP</h4>
-                <p className="text-sm">Crittografia AES-128-CCM con autenticazione. Protegge i dati sul collegamento radio. Terzo livello di crittografia del nostro messaggio!</p>
+                <p className="text-base lg:text-lg">Crittografia AES-128-CCM con autenticazione. Protegge i dati sul collegamento radio. Terzo livello di crittografia del nostro messaggio!</p>
               </div>
             </InfoModal>
 
@@ -1210,11 +1210,11 @@ export default function ISOOSIPresentation() {
               <p><strong>OFDM</strong> (Orthogonal Frequency Division Multiplexing) divide la banda in 256 sottoportanti.</p>
               <div className="bg-cyan-500/20 p-4 rounded-lg mt-4">
                 <h4 className="font-bold text-cyan-400 mb-2">256-QAM</h4>
-                <p className="text-sm">Ogni sottoportante trasporta 8 bit per simbolo (256 = 2⁸ punti nel diagramma di costellazione).</p>
+                <p className="text-base lg:text-lg">Ogni sottoportante trasporta 8 bit per simbolo (256 = 2⁸ punti nel diagramma di costellazione).</p>
               </div>
               <div className="bg-green-500/20 p-4 rounded-lg mt-4">
                 <h4 className="font-bold text-green-400 mb-2">Tempo trasmissione: ~52 μs</h4>
-                <p className="text-sm">549 byte = 4392 bit viaggiano in meno di un decimo di millisecondo a 5 GHz!</p>
+                <p className="text-base lg:text-lg">549 byte = 4392 bit viaggiano in meno di un decimo di millisecondo a 5 GHz!</p>
               </div>
             </InfoModal>
           </div>
@@ -1280,7 +1280,7 @@ export default function ISOOSIPresentation() {
               </div>
               <div className="bg-purple-500/20 p-4 rounded-lg mt-4">
                 <h4 className="font-bold text-purple-400 mb-2">Crittografia E2E sul server</h4>
-                <p className="text-sm">Il server WhatsApp vede solo i metadati (chi parla con chi) ma NON può leggere "ciao" grazie al Signal Protocol!</p>
+                <p className="text-base lg:text-lg">Il server WhatsApp vede solo i metadati (chi parla con chi) ma NON può leggere "ciao" grazie al Signal Protocol!</p>
               </div>
             </InfoModal>
           </div>
