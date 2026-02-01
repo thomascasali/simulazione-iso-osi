@@ -1799,20 +1799,24 @@ export default function ISOOSIPresentation() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-14 gap-0.5 p-2 bg-black/30 rounded">
-                    {Array.from({ length: 100 }, (_, i) => (
-                      <div
-                        key={i}
-                        className="w-3 h-3 lg:w-4 lg:h-4 rounded-sm transition-all duration-300"
-                        style={{
-                          backgroundColor: `hsl(${180 + i * 1.5}, 70%, 50%)`,
-                          animationDelay: `${i * 30}ms`
-                        }}
-                      />
-                    ))}
-                    <div className="col-span-2 flex items-center justify-center text-gray-500 text-xs">+6</div>
+                  {/* Compact 10x10 grid representing fragmented image */}
+                  <div className="flex justify-center">
+                    <div className="inline-grid grid-cols-10 bg-black/50 rounded-lg overflow-hidden border border-cyan-500/30">
+                      {Array.from({ length: 100 }, (_, i) => (
+                        <div
+                          key={i}
+                          className="w-5 h-5 lg:w-6 lg:h-6"
+                          style={{
+                            backgroundColor: `hsl(${200 + Math.floor(i / 10) * 8 + (i % 10) * 2}, 60%, ${45 + (i % 10) * 2}%)`,
+                          }}
+                        />
+                      ))}
+                    </div>
+                    <div className="ml-2 flex flex-col justify-end text-gray-500 text-sm">
+                      <span>+6</span>
+                    </div>
                   </div>
-                  <div className="text-center text-gray-400 text-sm lg:text-base">
+                  <div className="text-center text-gray-400 text-sm lg:text-base mt-2">
                     Ogni quadrato = 1 segmento TCP (~1460 byte)
                   </div>
 
