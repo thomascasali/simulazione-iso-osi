@@ -592,7 +592,7 @@ export default function ISOOSIPresentation() {
         return (
           <div className="flex flex-col items-center justify-center h-full text-center">
             <div className="mb-10">
-              <h1 className="text-5xl lg:text-7xl font-black mb-6 bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+              <h1 className="text-5xl lg:text-7xl font-black mb-6 pb-2.5 bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
                 Il Viaggio del Messaggio
               </h1>
               <h2 className="text-3xl lg:text-4xl text-gray-400">"ciao" attraverso ISO/OSI</h2>
@@ -1799,18 +1799,18 @@ export default function ISOOSIPresentation() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-10 gap-1 p-3 bg-black/30 rounded">
+                  <div className="grid grid-cols-14 gap-0.5 p-2 bg-black/30 rounded">
                     {Array.from({ length: 100 }, (_, i) => (
                       <div
                         key={i}
-                        className="aspect-square rounded-sm transition-all duration-300"
+                        className="w-3 h-3 lg:w-4 lg:h-4 rounded-sm transition-all duration-300"
                         style={{
                           backgroundColor: `hsl(${180 + i * 1.5}, 70%, 50%)`,
                           animationDelay: `${i * 30}ms`
                         }}
                       />
                     ))}
-                    <div className="col-span-6 flex items-center justify-center text-gray-500 text-xs">+6</div>
+                    <div className="col-span-2 flex items-center justify-center text-gray-500 text-xs">+6</div>
                   </div>
                   <div className="text-center text-gray-400 text-sm lg:text-base">
                     Ogni quadrato = 1 segmento TCP (~1460 byte)
