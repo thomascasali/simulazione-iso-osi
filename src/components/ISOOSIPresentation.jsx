@@ -533,7 +533,7 @@ export default function ISOOSIPresentation() {
   const [autoPlay, setAutoPlay] = useState(false);
   const [activeInfo, setActiveInfo] = useState(null);
 
-  const totalSlides = 12;
+  const totalSlides = 16;
 
   // Close info modal when changing slides
   useEffect(() => {
@@ -1720,7 +1720,553 @@ export default function ISOOSIPresentation() {
           </div>
         );
 
-      case 11: // End
+      case 11: // Appendix - Intro TCP Fragmentation
+        return (
+          <div className="h-full flex flex-col">
+            <div className="flex items-center gap-4 mb-6">
+              <span className="text-5xl lg:text-6xl">📦</span>
+              <div className="flex-1">
+                <h2 className="text-3xl lg:text-4xl font-bold text-orange-400">Appendice: E se il messaggio fosse grande?</h2>
+                <p className="text-lg lg:text-xl text-gray-400">Segmentazione TCP per file di grandi dimensioni</p>
+              </div>
+              <InfoButton onClick={() => setActiveInfo('tcp-fragmentation')} />
+            </div>
+
+            <InfoModal isOpen={activeInfo === 'tcp-fragmentation'} onClose={() => setActiveInfo(null)} title="Segmentazione TCP">
+              <div className="space-y-6">
+                <div>
+                  <h4 className="text-xl lg:text-2xl font-bold text-orange-400 mb-3">📦 Perché segmentare?</h4>
+                  <p className="mb-3">I messaggi piccoli come "ciao" (4 byte) viaggiano in un singolo pacchetto. Ma cosa succede con un'immagine da 150 KB?</p>
+                  <ul className="list-disc list-inside space-y-2 text-base lg:text-xl">
+                    <li><strong>MTU (Maximum Transmission Unit):</strong> Ethernet permette frame di max 1500 byte</li>
+                    <li><strong>MSS (Maximum Segment Size):</strong> Payload TCP max ~1460 byte (1500 - 20 IP - 20 TCP)</li>
+                    <li><strong>Necessità:</strong> File grandi devono essere divisi in segmenti più piccoli</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h4 className="text-xl lg:text-2xl font-bold text-cyan-400 mb-3">🔢 Sequence Numbers</h4>
+                  <p className="mb-3">TCP assegna un numero di sequenza a ogni byte trasmesso:</p>
+                  <ul className="list-disc list-inside space-y-2 text-base lg:text-xl">
+                    <li><strong>Primo segmento:</strong> SEQ = 0, contiene byte 0-1459</li>
+                    <li><strong>Secondo segmento:</strong> SEQ = 1460, contiene byte 1460-2919</li>
+                    <li><strong>E così via...</strong> fino a coprire tutti i 153.600 byte</li>
+                  </ul>
+                </div>
+
+                <div className="bg-orange-500/20 p-4 rounded-lg border border-orange-500/50">
+                  <p className="text-orange-300 text-base lg:text-xl">
+                    <strong>💡 Curiosità:</strong> Il sequence number è un intero a 32 bit, quindi può contare fino a ~4 GB prima di "ricominciare" (wrap-around).
+                  </p>
+                </div>
+              </div>
+            </InfoModal>
+
+            <div className="flex-1 grid grid-cols-2 gap-6">
+              {/* Left: Image representation */}
+              <div className="bg-black/30 rounded-lg p-5 border border-orange-500/30 flex flex-col">
+                <h3 className="text-lg lg:text-xl font-bold text-orange-400 mb-4">🖼️ IMMAGINE ORIGINALE</h3>
+
+                <div className="flex-1 flex flex-col items-center justify-center">
+                  <div className="relative w-48 h-48 lg:w-56 lg:h-56 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 rounded-lg shadow-xl mb-4 flex items-center justify-center">
+                    <span className="text-6xl">🏞️</span>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl lg:text-3xl font-bold text-white">foto.jpg</div>
+                    <div className="text-xl lg:text-2xl text-orange-400 font-mono mt-2">150 KB</div>
+                    <div className="text-base lg:text-lg text-gray-400 mt-1">153.600 byte</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right: Segmentation */}
+              <div className="bg-black/30 rounded-lg p-5 border border-cyan-500/30 flex flex-col">
+                <h3 className="text-lg lg:text-xl font-bold text-cyan-400 mb-4">✂️ SEGMENTAZIONE TCP</h3>
+
+                <div className="flex-1 space-y-4">
+                  <div className="bg-cyan-500/10 p-4 rounded">
+                    <div className="flex justify-between text-base lg:text-lg mb-2">
+                      <span className="text-gray-400">Dimensione file:</span>
+                      <span className="text-white font-mono">153.600 byte</span>
+                    </div>
+                    <div className="flex justify-between text-base lg:text-lg mb-2">
+                      <span className="text-gray-400">MSS (Max Segment Size):</span>
+                      <span className="text-cyan-400 font-mono">1.460 byte</span>
+                    </div>
+                    <div className="flex justify-between text-base lg:text-lg border-t border-gray-700 pt-2 mt-2">
+                      <span className="text-gray-400">Segmenti necessari:</span>
+                      <span className="text-green-400 font-mono font-bold text-xl">⌈153600/1460⌉ = 106</span>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-10 gap-1 p-3 bg-black/30 rounded">
+                    {Array.from({ length: 100 }, (_, i) => (
+                      <div
+                        key={i}
+                        className="aspect-square rounded-sm transition-all duration-300"
+                        style={{
+                          backgroundColor: `hsl(${180 + i * 1.5}, 70%, 50%)`,
+                          animationDelay: `${i * 30}ms`
+                        }}
+                      />
+                    ))}
+                    <div className="col-span-6 flex items-center justify-center text-gray-500 text-xs">+6</div>
+                  </div>
+                  <div className="text-center text-gray-400 text-sm lg:text-base">
+                    Ogni quadrato = 1 segmento TCP (~1460 byte)
+                  </div>
+
+                  <div className="bg-green-500/20 p-3 rounded border border-green-500/50">
+                    <div className="text-green-400 font-bold text-base lg:text-lg text-center">
+                      106 pacchetti indipendenti sulla rete!
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 12: // Appendix - Packet Transmission Animation
+        return (
+          <div className="h-full flex flex-col">
+            <div className="flex items-center gap-4 mb-6">
+              <span className="text-5xl lg:text-6xl">🚀</span>
+              <div className="flex-1">
+                <h2 className="text-3xl lg:text-4xl font-bold text-blue-400">Trasmissione dei Pacchetti</h2>
+                <p className="text-lg lg:text-xl text-gray-400">I segmenti viaggiano in modo indipendente sulla rete</p>
+              </div>
+              <InfoButton onClick={() => setActiveInfo('packet-transmission')} />
+            </div>
+
+            <InfoModal isOpen={activeInfo === 'packet-transmission'} onClose={() => setActiveInfo(null)} title="Trasmissione Indipendente">
+              <div className="space-y-6">
+                <div>
+                  <h4 className="text-xl lg:text-2xl font-bold text-blue-400 mb-3">🌐 Routing Indipendente</h4>
+                  <p className="mb-3">Ogni pacchetto IP è instradato indipendentemente:</p>
+                  <ul className="list-disc list-inside space-y-2 text-base lg:text-xl">
+                    <li><strong>Decisioni hop-by-hop:</strong> Ogni router decide il next-hop basandosi sulla propria tabella</li>
+                    <li><strong>Percorsi diversi:</strong> Pacchetti consecutivi possono seguire strade diverse</li>
+                    <li><strong>Latenze variabili:</strong> Congestione, code, e distanze causano ritardi diversi</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h4 className="text-xl lg:text-2xl font-bold text-green-400 mb-3">📊 Sliding Window</h4>
+                  <p className="mb-3">TCP non aspetta l'ACK di ogni pacchetto (sarebbe troppo lento!):</p>
+                  <ul className="list-disc list-inside space-y-2 text-base lg:text-xl">
+                    <li><strong>Window Size:</strong> Numero di byte "in volo" senza ACK (es. 64 KB)</li>
+                    <li><strong>Parallelismo:</strong> Con window 64KB e MSS 1460, ~44 pacchetti simultanei</li>
+                    <li><strong>Flow Control:</strong> Il ricevente comunica quanta memoria ha disponibile</li>
+                  </ul>
+                </div>
+
+                <div className="bg-blue-500/20 p-4 rounded-lg border border-blue-500/50">
+                  <p className="text-blue-300 text-base lg:text-xl">
+                    <strong>💡 Esempio:</strong> Con RTT di 50ms e window 64KB, il throughput massimo è ~10 Mbps. Per connessioni veloci servono window più grandi (TCP Window Scaling).
+                  </p>
+                </div>
+              </div>
+            </InfoModal>
+
+            <div className="flex-1 flex flex-col gap-4">
+              {/* Network visualization */}
+              <div className="bg-black/30 rounded-lg p-5 border border-blue-500/30 flex-1">
+                <div className="h-full flex flex-col">
+                  <div className="flex justify-between items-center mb-4">
+                    <div className="flex items-center gap-3">
+                      <span className="text-4xl">📱</span>
+                      <div>
+                        <div className="text-lg font-bold text-white">Mittente</div>
+                        <div className="text-sm text-gray-400">Telefono</div>
+                      </div>
+                    </div>
+
+                    <div className="flex-1 mx-8 relative h-32">
+                      {/* Network cloud */}
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="text-6xl opacity-20">☁️</div>
+                        <div className="absolute text-lg text-gray-500">Internet</div>
+                      </div>
+
+                      {/* Animated packets */}
+                      <div className="absolute inset-0 overflow-hidden">
+                        {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => (
+                          <div
+                            key={i}
+                            className="absolute h-6 w-6 rounded font-mono text-xs flex items-center justify-center font-bold animate-pulse"
+                            style={{
+                              backgroundColor: `hsl(${180 + i * 20}, 70%, 50%)`,
+                              left: `${10 + i * 11}%`,
+                              top: `${20 + Math.sin(i * 0.8) * 30}%`,
+                              animationDelay: `${i * 150}ms`,
+                              boxShadow: `0 0 10px hsl(${180 + i * 20}, 70%, 50%)`
+                            }}
+                          >
+                            {i + 1}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      <div className="text-right">
+                        <div className="text-lg font-bold text-white">Destinatario</div>
+                        <div className="text-sm text-gray-400">PC</div>
+                      </div>
+                      <span className="text-4xl">💻</span>
+                    </div>
+                  </div>
+
+                  {/* Sequence visualization */}
+                  <div className="grid grid-cols-2 gap-4 mt-4">
+                    <div className="bg-blue-500/10 p-4 rounded">
+                      <h4 className="text-base font-bold text-blue-400 mb-3">📤 Ordine di INVIO</h4>
+                      <div className="flex gap-1 flex-wrap">
+                        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
+                          <div
+                            key={n}
+                            className="w-8 h-8 rounded flex items-center justify-center text-sm font-bold text-black"
+                            style={{ backgroundColor: `hsl(${180 + n * 15}, 70%, 50%)` }}
+                          >
+                            {n}
+                          </div>
+                        ))}
+                        <span className="text-gray-500 flex items-center px-2">...</span>
+                      </div>
+                      <div className="text-gray-400 text-sm mt-2">Sequenziale: 1, 2, 3, 4, 5...</div>
+                    </div>
+
+                    <div className="bg-orange-500/10 p-4 rounded">
+                      <h4 className="text-base font-bold text-orange-400 mb-3">📥 Ordine di ARRIVO</h4>
+                      <div className="flex gap-1 flex-wrap">
+                        {[1, 3, 2, 5, 4, 8, 6, 7, 10, 9].map((n, idx) => (
+                          <div
+                            key={idx}
+                            className="w-8 h-8 rounded flex items-center justify-center text-sm font-bold text-black"
+                            style={{ backgroundColor: `hsl(${180 + n * 15}, 70%, 50%)` }}
+                          >
+                            {n}
+                          </div>
+                        ))}
+                        <span className="text-gray-500 flex items-center px-2">...</span>
+                      </div>
+                      <div className="text-orange-400 text-sm mt-2">Fuori ordine: 1, 3, 2, 5, 4...</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Stats bar */}
+              <div className="grid grid-cols-3 gap-4">
+                <div className="bg-cyan-500/20 p-3 rounded border border-cyan-500/50 text-center">
+                  <div className="text-cyan-400 font-bold text-xl lg:text-2xl">106</div>
+                  <div className="text-gray-400 text-sm">Pacchetti totali</div>
+                </div>
+                <div className="bg-green-500/20 p-3 rounded border border-green-500/50 text-center">
+                  <div className="text-green-400 font-bold text-xl lg:text-2xl">~44</div>
+                  <div className="text-gray-400 text-sm">In volo (window)</div>
+                </div>
+                <div className="bg-orange-500/20 p-3 rounded border border-orange-500/50 text-center">
+                  <div className="text-orange-400 font-bold text-xl lg:text-2xl">~50ms</div>
+                  <div className="text-gray-400 text-sm">RTT medio</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 13: // Appendix - Image Reconstruction
+        return (
+          <div className="h-full flex flex-col">
+            <div className="flex items-center gap-4 mb-6">
+              <span className="text-5xl lg:text-6xl">🧩</span>
+              <div className="flex-1">
+                <h2 className="text-3xl lg:text-4xl font-bold text-green-400">Ricostruzione dell'Immagine</h2>
+                <p className="text-lg lg:text-xl text-gray-400">TCP riordina i pacchetti e riassembla i dati</p>
+              </div>
+              <InfoButton onClick={() => setActiveInfo('reconstruction')} />
+            </div>
+
+            <InfoModal isOpen={activeInfo === 'reconstruction'} onClose={() => setActiveInfo(null)} title="Ricostruzione e Riordinamento">
+              <div className="space-y-6">
+                <div>
+                  <h4 className="text-xl lg:text-2xl font-bold text-green-400 mb-3">🧩 Buffer di Riordinamento</h4>
+                  <p className="mb-3">Il ricevente mantiene un buffer per gestire i pacchetti fuori ordine:</p>
+                  <ul className="list-disc list-inside space-y-2 text-base lg:text-xl">
+                    <li><strong>Receive Buffer:</strong> Area di memoria dove TCP accumula i dati ricevuti</li>
+                    <li><strong>Sequence tracking:</strong> TCP sa quali byte ha già ricevuto e quali mancano</li>
+                    <li><strong>Gap filling:</strong> Quando arriva un pacchetto "mancante", il buco viene riempito</li>
+                    <li><strong>Consegna ordinata:</strong> I dati passano all'applicazione solo in ordine corretto</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h4 className="text-xl lg:text-2xl font-bold text-yellow-400 mb-3">⚠️ Pacchetti Persi</h4>
+                  <p className="mb-3">Cosa succede se un pacchetto non arriva mai?</p>
+                  <ul className="list-disc list-inside space-y-2 text-base lg:text-xl">
+                    <li><strong>Timeout:</strong> Se l'ACK non arriva entro RTO, il mittente ritrasmette</li>
+                    <li><strong>Fast Retransmit:</strong> 3 ACK duplicati → ritrasmissione immediata (senza timeout)</li>
+                    <li><strong>SACK:</strong> Selective ACK indica esattamente quali segmenti mancano</li>
+                  </ul>
+                </div>
+
+                <div className="bg-green-500/20 p-4 rounded-lg border border-green-500/50">
+                  <p className="text-green-300 text-base lg:text-xl">
+                    <strong>💡 Affidabilità:</strong> Grazie a questi meccanismi, TCP garantisce che TUTTI i byte arrivino, nell'ordine corretto, senza duplicati. Per questo è usato per trasferire file e pagine web.
+                  </p>
+                </div>
+              </div>
+            </InfoModal>
+
+            <div className="flex-1 grid grid-cols-2 gap-6">
+              {/* Left: Reordering buffer */}
+              <div className="bg-black/30 rounded-lg p-5 border border-yellow-500/30 flex flex-col">
+                <h3 className="text-lg lg:text-xl font-bold text-yellow-400 mb-4">📋 BUFFER DI RICEZIONE</h3>
+
+                <div className="flex-1 space-y-4">
+                  <div className="text-sm text-gray-400 mb-2">Pacchetti arrivati (in ordine di arrivo):</div>
+
+                  <div className="space-y-2">
+                    {[
+                      { time: 't+0ms', packets: [1], new: 1 },
+                      { time: 't+12ms', packets: [1, null, 3], new: 3 },
+                      { time: 't+18ms', packets: [1, 2, 3], new: 2 },
+                      { time: 't+25ms', packets: [1, 2, 3, null, 5], new: 5 },
+                      { time: 't+31ms', packets: [1, 2, 3, 4, 5], new: 4 },
+                    ].map((row, idx) => (
+                      <div key={idx} className="flex items-center gap-3 bg-black/30 p-2 rounded">
+                        <span className="text-xs text-gray-500 w-16 font-mono">{row.time}</span>
+                        <div className="flex gap-1">
+                          {row.packets.map((p, i) => (
+                            <div
+                              key={i}
+                              className={`w-8 h-8 rounded flex items-center justify-center text-sm font-bold ${
+                                p === null
+                                  ? 'border-2 border-dashed border-gray-600 text-gray-600'
+                                  : p === row.new
+                                    ? 'ring-2 ring-white text-black'
+                                    : 'text-black'
+                              }`}
+                              style={p ? { backgroundColor: `hsl(${180 + p * 15}, 70%, 50%)` } : {}}
+                            >
+                              {p || '?'}
+                            </div>
+                          ))}
+                        </div>
+                        {row.new && (
+                          <span className="text-green-400 text-xs">← arriva #{row.new}</span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="bg-green-500/20 p-3 rounded border border-green-500/50 mt-4">
+                    <div className="text-green-400 text-sm lg:text-base">
+                      ✓ TCP riempie i "buchi" man mano che i pacchetti arrivano
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right: Progressive image reconstruction */}
+              <div className="bg-black/30 rounded-lg p-5 border border-green-500/30 flex flex-col">
+                <h3 className="text-lg lg:text-xl font-bold text-green-400 mb-4">🖼️ IMMAGINE RICOSTRUITA</h3>
+
+                <div className="flex-1 flex flex-col items-center justify-center space-y-4">
+                  {/* Progressive loading simulation */}
+                  <div className="relative w-48 h-48 lg:w-56 lg:h-56 rounded-lg overflow-hidden border-2 border-green-500/50">
+                    <div className="absolute inset-0 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 flex items-center justify-center">
+                      <span className="text-6xl">🏞️</span>
+                    </div>
+                    {/* Simulated loading overlay */}
+                    <div
+                      className="absolute bottom-0 left-0 right-0 bg-gray-900/90 flex items-center justify-center transition-all duration-1000"
+                      style={{ height: '20%' }}
+                    >
+                      <div className="text-gray-400 text-xs">Caricamento...</div>
+                    </div>
+                  </div>
+
+                  <div className="w-full bg-gray-800 rounded-full h-4 overflow-hidden">
+                    <div
+                      className="h-full bg-gradient-to-r from-cyan-500 to-green-500 transition-all duration-500"
+                      style={{ width: '80%' }}
+                    />
+                  </div>
+
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-green-400">85/106 pacchetti</div>
+                    <div className="text-gray-400">~80% completato</div>
+                  </div>
+
+                  <div className="w-full grid grid-cols-2 gap-3 mt-4">
+                    <div className="bg-cyan-500/20 p-2 rounded text-center">
+                      <div className="text-cyan-400 font-bold">124 KB</div>
+                      <div className="text-gray-400 text-xs">Ricevuti</div>
+                    </div>
+                    <div className="bg-orange-500/20 p-2 rounded text-center">
+                      <div className="text-orange-400 font-bold">26 KB</div>
+                      <div className="text-gray-400 text-xs">Mancanti</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 14: // Appendix - Technical Summary
+        return (
+          <div className="h-full flex flex-col">
+            <div className="flex items-center gap-4 mb-6">
+              <span className="text-5xl lg:text-6xl">📊</span>
+              <div className="flex-1">
+                <h2 className="text-3xl lg:text-4xl font-bold text-purple-400">Riepilogo: Affidabilità TCP</h2>
+                <p className="text-lg lg:text-xl text-gray-400">Meccanismi che garantiscono la consegna completa</p>
+              </div>
+              <InfoButton onClick={() => setActiveInfo('tcp-reliability')} />
+            </div>
+
+            <InfoModal isOpen={activeInfo === 'tcp-reliability'} onClose={() => setActiveInfo(null)} title="TCP vs UDP">
+              <div className="space-y-6">
+                <div>
+                  <h4 className="text-xl lg:text-2xl font-bold text-purple-400 mb-3">🔄 TCP (Transmission Control Protocol)</h4>
+                  <ul className="list-disc list-inside space-y-2 text-base lg:text-xl">
+                    <li><strong>Connection-oriented:</strong> Handshake a 3 vie prima di trasmettere</li>
+                    <li><strong>Affidabile:</strong> Garantisce consegna, ordine, no duplicati</li>
+                    <li><strong>Flow control:</strong> Adatta la velocità al ricevente</li>
+                    <li><strong>Congestion control:</strong> Rallenta se la rete è congestionata</li>
+                    <li><strong>Uso:</strong> HTTP, HTTPS, FTP, SMTP, SSH</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h4 className="text-xl lg:text-2xl font-bold text-cyan-400 mb-3">📡 UDP (User Datagram Protocol)</h4>
+                  <ul className="list-disc list-inside space-y-2 text-base lg:text-xl">
+                    <li><strong>Connectionless:</strong> Nessun handshake, invia subito</li>
+                    <li><strong>Best-effort:</strong> Nessuna garanzia di consegna o ordine</li>
+                    <li><strong>Veloce:</strong> Meno overhead, latenza minima</li>
+                    <li><strong>Uso:</strong> Streaming video/audio, gaming online, DNS, VoIP</li>
+                  </ul>
+                </div>
+
+                <div className="bg-purple-500/20 p-4 rounded-lg border border-purple-500/50">
+                  <p className="text-purple-300 text-base lg:text-xl">
+                    <strong>💡 Scelta:</strong> WhatsApp usa TCP per i messaggi (devono arrivare tutti) ma potrebbe usare UDP per le chiamate vocali (meglio perdere qualche frame che avere ritardo).
+                  </p>
+                </div>
+              </div>
+            </InfoModal>
+
+            <div className="flex-1 grid grid-cols-2 gap-6">
+              {/* Left: TCP Mechanisms */}
+              <div className="bg-black/30 rounded-lg p-5 border border-purple-500/30 flex flex-col">
+                <h3 className="text-lg lg:text-xl font-bold text-purple-400 mb-4">🔧 MECCANISMI TCP</h3>
+
+                <div className="space-y-4 flex-1">
+                  <div className="bg-purple-500/10 p-4 rounded">
+                    <div className="flex items-center gap-3 mb-2">
+                      <span className="text-2xl">📊</span>
+                      <span className="font-bold text-purple-300 text-lg">Sliding Window</span>
+                    </div>
+                    <p className="text-gray-400 text-sm lg:text-base">
+                      Permette di inviare più pacchetti senza attendere ACK, massimizzando il throughput.
+                    </p>
+                  </div>
+
+                  <div className="bg-green-500/10 p-4 rounded">
+                    <div className="flex items-center gap-3 mb-2">
+                      <span className="text-2xl">✅</span>
+                      <span className="font-bold text-green-300 text-lg">ACK Cumulativi</span>
+                    </div>
+                    <p className="text-gray-400 text-sm lg:text-base">
+                      Un singolo ACK conferma tutti i byte fino a quel punto, riducendo il traffico.
+                    </p>
+                  </div>
+
+                  <div className="bg-orange-500/10 p-4 rounded">
+                    <div className="flex items-center gap-3 mb-2">
+                      <span className="text-2xl">⚡</span>
+                      <span className="font-bold text-orange-300 text-lg">Fast Retransmit</span>
+                    </div>
+                    <p className="text-gray-400 text-sm lg:text-base">
+                      3 ACK duplicati = pacchetto perso → ritrasmissione immediata senza timeout.
+                    </p>
+                  </div>
+
+                  <div className="bg-cyan-500/10 p-4 rounded">
+                    <div className="flex items-center gap-3 mb-2">
+                      <span className="text-2xl">🎯</span>
+                      <span className="font-bold text-cyan-300 text-lg">SACK (Selective ACK)</span>
+                    </div>
+                    <p className="text-gray-400 text-sm lg:text-base">
+                      Indica esattamente quali segmenti sono arrivati, evitando ritrasmissioni inutili.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right: TCP vs UDP comparison */}
+              <div className="bg-black/30 rounded-lg p-5 border border-cyan-500/30 flex flex-col">
+                <h3 className="text-lg lg:text-xl font-bold text-cyan-400 mb-4">⚖️ TCP vs UDP</h3>
+
+                <div className="flex-1">
+                  <table className="w-full text-sm lg:text-base">
+                    <thead>
+                      <tr className="border-b border-gray-700">
+                        <th className="text-left py-2 text-gray-400">Caratteristica</th>
+                        <th className="text-center py-2 text-purple-400">TCP</th>
+                        <th className="text-center py-2 text-cyan-400">UDP</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr className="border-b border-gray-800">
+                        <td className="py-2 text-gray-300">Connessione</td>
+                        <td className="text-center text-purple-300">Sì (3-way)</td>
+                        <td className="text-center text-cyan-300">No</td>
+                      </tr>
+                      <tr className="border-b border-gray-800">
+                        <td className="py-2 text-gray-300">Affidabilità</td>
+                        <td className="text-center text-green-400">✓ Garantita</td>
+                        <td className="text-center text-red-400">✗ Best-effort</td>
+                      </tr>
+                      <tr className="border-b border-gray-800">
+                        <td className="py-2 text-gray-300">Ordine</td>
+                        <td className="text-center text-green-400">✓ Preservato</td>
+                        <td className="text-center text-red-400">✗ Non garantito</td>
+                      </tr>
+                      <tr className="border-b border-gray-800">
+                        <td className="py-2 text-gray-300">Overhead</td>
+                        <td className="text-center text-orange-400">20+ byte</td>
+                        <td className="text-center text-green-400">8 byte</td>
+                      </tr>
+                      <tr className="border-b border-gray-800">
+                        <td className="py-2 text-gray-300">Latenza</td>
+                        <td className="text-center text-orange-400">Maggiore</td>
+                        <td className="text-center text-green-400">Minima</td>
+                      </tr>
+                      <tr>
+                        <td className="py-2 text-gray-300">Uso tipico</td>
+                        <td className="text-center text-purple-300 text-xs">Web, Email, File</td>
+                        <td className="text-center text-cyan-300 text-xs">Stream, Gaming, VoIP</td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  <div className="mt-6 p-4 bg-gradient-to-r from-purple-500/20 to-cyan-500/20 rounded border border-purple-500/30">
+                    <div className="text-center">
+                      <div className="text-lg font-bold text-white mb-1">WhatsApp Web usa TCP</div>
+                      <div className="text-gray-400 text-sm">Perché ogni messaggio deve arrivare integro!</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 15: // End
         return (
           <div className="flex flex-col items-center justify-center h-full text-center">
             <div className="text-9xl mb-8">🎓</div>
@@ -1740,7 +2286,7 @@ export default function ISOOSIPresentation() {
             </div>
 
             <div className="flex gap-4 flex-wrap justify-center">
-              {['Crittografia E2E', 'TCP/IP', 'WebSocket', 'WiFi/Ethernet', 'NAT', 'Routing'].map(topic => (
+              {['Crittografia E2E', 'TCP/IP', 'WebSocket', 'WiFi/Ethernet', 'NAT', 'Routing', 'Segmentazione'].map(topic => (
                 <span key={topic} className="px-5 py-2 bg-cyan-500/20 border border-cyan-500 rounded-full text-cyan-400 text-lg lg:text-xl">
                   {topic}
                 </span>
