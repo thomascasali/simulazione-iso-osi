@@ -46,7 +46,7 @@ const AnimatedPacket = ({ layers, currentLayer, direction = 'down' }) => {
     : layers.filter(l => l <= currentLayer);
 
   return (
-    <div className="flex flex-col items-center gap-1">
+    <div className="flex flex-col items-center gap-2">
       {direction === 'down' ? (
         visibleLayers.sort((a, b) => b - a).map((layer, idx) => (
           <div
@@ -54,9 +54,9 @@ const AnimatedPacket = ({ layers, currentLayer, direction = 'down' }) => {
             className="transition-all duration-500 ease-out"
             style={{
               backgroundColor: layerColors[layer],
-              padding: `${4 + idx * 2}px ${12 + idx * 6}px`,
-              borderRadius: '4px',
-              fontSize: '10px',
+              padding: `${8 + idx * 3}px ${20 + idx * 10}px`,
+              borderRadius: '6px',
+              fontSize: '14px',
               fontWeight: 'bold',
               color: '#000',
               opacity: layer === currentLayer ? 1 : 0.7,
@@ -74,9 +74,9 @@ const AnimatedPacket = ({ layers, currentLayer, direction = 'down' }) => {
             className="transition-all duration-500 ease-out"
             style={{
               backgroundColor: layerColors[layer],
-              padding: `${4 + (visibleLayers.length - idx - 1) * 2}px ${12 + (visibleLayers.length - idx - 1) * 6}px`,
-              borderRadius: '4px',
-              fontSize: '10px',
+              padding: `${8 + (visibleLayers.length - idx - 1) * 3}px ${20 + (visibleLayers.length - idx - 1) * 10}px`,
+              borderRadius: '6px',
+              fontSize: '14px',
               fontWeight: 'bold',
               color: '#000',
               opacity: layer === currentLayer ? 1 : 0.7,
@@ -134,12 +134,12 @@ const BinaryRain = () => {
 // Hex viewer component
 const HexViewer = ({ data, highlight = [] }) => {
   return (
-    <div className="font-mono text-xs bg-black/50 p-3 rounded border border-cyan-500/30 overflow-x-auto">
-      <div className="flex flex-wrap gap-1">
+    <div className="font-mono text-sm lg:text-base bg-black/50 p-4 rounded border border-cyan-500/30 overflow-x-auto">
+      <div className="flex flex-wrap gap-2">
         {data.map((byte, idx) => (
           <span
             key={idx}
-            className={`px-1 py-0.5 rounded transition-all duration-300 ${
+            className={`px-2 py-1 rounded transition-all duration-300 ${
               highlight.includes(idx)
                 ? 'bg-cyan-500 text-black font-bold scale-110'
                 : 'text-cyan-300'
@@ -473,6 +473,9 @@ export default function ISOOSIPresentation() {
 
   const totalSlides = 12;
 
+  // Base font size for projection - larger for digital boards
+  const baseFontSize = "text-base md:text-lg lg:text-xl";
+
   useEffect(() => {
     if (autoPlay) {
       const timer = setInterval(() => {
@@ -521,40 +524,40 @@ export default function ISOOSIPresentation() {
       case 0: // Intro
         return (
           <div className="flex flex-col items-center justify-center h-full text-center">
-            <div className="mb-8">
-              <h1 className="text-5xl font-black mb-4 bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+            <div className="mb-10">
+              <h1 className="text-5xl lg:text-7xl font-black mb-6 bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
                 Il Viaggio del Messaggio
               </h1>
-              <h2 className="text-2xl text-gray-400">"ciao" attraverso ISO/OSI</h2>
+              <h2 className="text-3xl lg:text-4xl text-gray-400">"ciao" attraverso ISO/OSI</h2>
             </div>
 
-            <div className="flex items-center gap-8 my-8">
+            <div className="flex items-center gap-12 my-10 w-full max-w-4xl">
               <div className="text-center">
-                <div className="text-6xl mb-2">📱</div>
-                <div className="text-sm text-gray-400">WhatsApp App</div>
-                <div className="text-xs text-cyan-400">192.168.1.100</div>
+                <div className="text-7xl lg:text-8xl mb-4">📱</div>
+                <div className="text-lg lg:text-xl text-gray-400">WhatsApp App</div>
+                <div className="text-base lg:text-lg text-cyan-400 font-mono">192.168.1.100</div>
               </div>
 
-              <div className="flex-1 relative h-2">
+              <div className="flex-1 relative h-4">
                 <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 rounded animate-pulse" />
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="bg-gray-900 px-4 text-lg">→ "ciao" →</span>
+                  <span className="bg-gray-900 px-6 text-2xl lg:text-3xl font-bold">→ "ciao" →</span>
                 </div>
               </div>
 
               <div className="text-center">
-                <div className="text-6xl mb-2">💻</div>
-                <div className="text-sm text-gray-400">WhatsApp Web</div>
-                <div className="text-xs text-cyan-400">192.168.2.50</div>
+                <div className="text-7xl lg:text-8xl mb-4">💻</div>
+                <div className="text-lg lg:text-xl text-gray-400">WhatsApp Web</div>
+                <div className="text-base lg:text-lg text-cyan-400 font-mono">192.168.2.50</div>
               </div>
             </div>
 
-            <p className="text-gray-400 max-w-xl">
+            <p className="text-gray-400 max-w-3xl text-xl lg:text-2xl">
               Seguiamo il percorso completo di un semplice messaggio attraverso
               i 7 livelli della pila ISO/OSI, dal telefono al PC
             </p>
 
-            <div className="mt-8 text-xs text-gray-500">
+            <div className="mt-12 text-lg text-gray-500">
               ITTS Belluzzi Da Vinci - Sistemi e Reti
             </div>
           </div>
@@ -563,11 +566,11 @@ export default function ISOOSIPresentation() {
       case 1: // Overview
         return (
           <div className="h-full flex flex-col">
-            <h2 className="text-2xl font-bold text-cyan-400 mb-4">📚 La Pila ISO/OSI</h2>
+            <h2 className="text-3xl lg:text-4xl font-bold text-cyan-400 mb-6">📚 La Pila ISO/OSI</h2>
 
             <div className="flex-1 flex gap-8">
               <div className="flex-1">
-                <div className="space-y-2">
+                <div className="space-y-3">
                   {[7, 6, 5, 4, 3, 2, 1].map((layer) => {
                     const names = ['Applicazione', 'Presentazione', 'Sessione', 'Trasporto', 'Rete', 'Data Link', 'Fisico'];
                     const colors = ['#ff6b6b', '#feca57', '#48dbfb', '#1dd1a1', '#5f27cd', '#ff9f43', '#00d2d3'];
@@ -584,22 +587,22 @@ export default function ISOOSIPresentation() {
                     return (
                       <div
                         key={layer}
-                        className="flex items-center gap-3 p-2 rounded transition-all duration-500"
+                        className="flex items-center gap-4 p-3 lg:p-4 rounded transition-all duration-500"
                         style={{
                           backgroundColor: `${colors[7 - layer]}20`,
-                          borderLeft: `4px solid ${colors[7 - layer]}`,
+                          borderLeft: `6px solid ${colors[7 - layer]}`,
                           transform: animationStep >= (8 - layer) ? 'translateX(0)' : 'translateX(-100px)',
                           opacity: animationStep >= (8 - layer) ? 1 : 0
                         }}
                       >
-                        <span className="text-2xl font-bold w-10" style={{ color: colors[7 - layer] }}>
+                        <span className="text-3xl lg:text-4xl font-bold w-16" style={{ color: colors[7 - layer] }}>
                           L{layer}
                         </span>
                         <div>
-                          <div className="font-bold" style={{ color: colors[7 - layer] }}>
+                          <div className="font-bold text-lg lg:text-xl" style={{ color: colors[7 - layer] }}>
                             {names[7 - layer]}
                           </div>
-                          <div className="text-xs text-gray-400">{desc[7 - layer]}</div>
+                          <div className="text-sm lg:text-base text-gray-400">{desc[7 - layer]}</div>
                         </div>
                       </div>
                     );
@@ -607,14 +610,14 @@ export default function ISOOSIPresentation() {
                 </div>
               </div>
 
-              <div className="w-64 flex flex-col items-center justify-center">
-                <h3 className="text-sm font-bold text-gray-400 mb-4">INCAPSULAMENTO</h3>
+              <div className="w-72 lg:w-80 flex flex-col items-center justify-center">
+                <h3 className="text-base lg:text-lg font-bold text-gray-400 mb-6">INCAPSULAMENTO</h3>
                 <AnimatedPacket
                   layers={[7, 6, 5, 4, 3, 2, 1].slice(0, Math.min(animationStep, 7))}
                   currentLayer={Math.max(8 - animationStep, 1)}
                   direction="down"
                 />
-                <div className="mt-4 text-xs text-gray-500 text-center">
+                <div className="mt-6 text-sm lg:text-base text-gray-500 text-center">
                   Ogni livello aggiunge<br/>il proprio header
                 </div>
               </div>
@@ -625,32 +628,32 @@ export default function ISOOSIPresentation() {
       case 2: // L7 Down
         return (
           <div className="h-full flex flex-col">
-            <div className="flex items-center gap-4 mb-4">
-              <span className="text-4xl">📱</span>
+            <div className="flex items-center gap-4 mb-6">
+              <span className="text-5xl lg:text-6xl">📱</span>
               <div>
-                <h2 className="text-2xl font-bold text-red-400">Livello 7 - Applicazione</h2>
-                <p className="text-gray-400">WhatsApp + Signal Protocol</p>
+                <h2 className="text-3xl lg:text-4xl font-bold text-red-400">Livello 7 - Applicazione</h2>
+                <p className="text-lg lg:text-xl text-gray-400">WhatsApp + Signal Protocol</p>
               </div>
-              <div className="ml-auto px-3 py-1 bg-red-500/20 border border-red-500 rounded text-red-400 text-sm">
+              <div className="ml-auto px-4 py-2 bg-red-500/20 border border-red-500 rounded text-red-400 text-base lg:text-lg">
                 ↓ INCAPSULAMENTO
               </div>
             </div>
 
-            <div className="flex-1 grid grid-cols-2 gap-4">
-              <div className="space-y-4">
-                <div className="bg-black/30 rounded-lg p-4 border border-red-500/30">
-                  <h3 className="text-sm font-bold text-red-400 mb-2">MESSAGGIO ORIGINALE</h3>
-                  <div className="text-4xl font-mono text-center py-4 bg-white/10 rounded">
+            <div className="flex-1 grid grid-cols-2 gap-6">
+              <div className="space-y-4 flex flex-col">
+                <div className="bg-black/30 rounded-lg p-5 border border-red-500/30 flex-1">
+                  <h3 className="text-base lg:text-lg font-bold text-red-400 mb-3">MESSAGGIO ORIGINALE</h3>
+                  <div className="text-5xl lg:text-6xl font-mono text-center py-6 bg-white/10 rounded">
                     "ciao"
                   </div>
-                  <div className="text-xs text-gray-400 mt-2 text-center">
+                  <div className="text-base lg:text-lg text-gray-400 mt-3 text-center">
                     UTF-8: 63 69 61 6F (4 byte)
                   </div>
                 </div>
 
-                <div className="bg-black/30 rounded-lg p-4 border border-red-500/30">
-                  <h3 className="text-sm font-bold text-red-400 mb-2">CRITTOGRAFIA END-TO-END</h3>
-                  <div className="space-y-2 text-xs font-mono">
+                <div className="bg-black/30 rounded-lg p-5 border border-red-500/30 flex-1">
+                  <h3 className="text-base lg:text-lg font-bold text-red-400 mb-3">CRITTOGRAFIA END-TO-END</h3>
+                  <div className="space-y-3 text-base lg:text-lg font-mono">
                     <div className="flex justify-between">
                       <span className="text-gray-400">Algoritmo:</span>
                       <span className="text-red-300">Signal Protocol</span>
@@ -671,40 +674,40 @@ export default function ISOOSIPresentation() {
                 </div>
               </div>
 
-              <div className="space-y-4">
-                <div className="bg-black/30 rounded-lg p-4 border border-red-500/30">
-                  <h3 className="text-sm font-bold text-red-400 mb-2">STRUTTURA MESSAGGIO WHATSAPP</h3>
-                  <div className="space-y-1 text-xs font-mono">
-                    <div className="p-2 bg-red-500/20 rounded">
+              <div className="space-y-4 flex flex-col">
+                <div className="bg-black/30 rounded-lg p-5 border border-red-500/30 flex-1">
+                  <h3 className="text-base lg:text-lg font-bold text-red-400 mb-3">STRUTTURA MESSAGGIO WHATSAPP</h3>
+                  <div className="space-y-2 text-sm lg:text-base font-mono">
+                    <div className="p-3 bg-red-500/20 rounded">
                       <span className="text-red-400">message_id:</span>
                       <span className="text-gray-300 ml-2">3EB0A8C7D2F4E6B8...</span>
                     </div>
-                    <div className="p-2 bg-red-500/10 rounded">
+                    <div className="p-3 bg-red-500/10 rounded">
                       <span className="text-red-400">sender_jid:</span>
                       <span className="text-gray-300 ml-2">393331234567@s.whatsapp.net</span>
                     </div>
-                    <div className="p-2 bg-red-500/20 rounded">
+                    <div className="p-3 bg-red-500/20 rounded">
                       <span className="text-red-400">recipient_jid:</span>
                       <span className="text-gray-300 ml-2">393479876543@s.whatsapp.net</span>
                     </div>
-                    <div className="p-2 bg-red-500/10 rounded">
+                    <div className="p-3 bg-red-500/10 rounded">
                       <span className="text-red-400">timestamp:</span>
                       <span className="text-gray-300 ml-2">1702640400</span>
                     </div>
-                    <div className="p-2 bg-red-500/30 rounded border border-red-500">
+                    <div className="p-3 bg-red-500/30 rounded border border-red-500">
                       <span className="text-red-400">encrypted_payload:</span>
                       <span className="text-gray-300 ml-2">[Signal Ciphertext]</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="bg-black/30 rounded-lg p-4 border border-red-500/30">
-                  <h3 className="text-sm font-bold text-red-400 mb-2">OUTPUT L7</h3>
+                <div className="bg-black/30 rounded-lg p-5 border border-red-500/30">
+                  <h3 className="text-base lg:text-lg font-bold text-red-400 mb-3">OUTPUT L7</h3>
                   <HexViewer
                     data={['7F', '2A', '8B', '4C', '9D', '1E', '6F', '3A', '5B', '2C', '8D', '4E', 'F1', 'A2', 'B3', 'C4']}
                     highlight={[0, 1, 2, 3]}
                   />
-                  <div className="text-xs text-gray-400 mt-2">
+                  <div className="text-base lg:text-lg text-gray-400 mt-3">
                     4 byte → <span className="text-red-400 font-bold">324 byte</span> (criptato + metadata)
                   </div>
                 </div>
@@ -716,22 +719,22 @@ export default function ISOOSIPresentation() {
       case 3: // L6-L5 Down
         return (
           <div className="h-full flex flex-col">
-            <div className="flex items-center gap-4 mb-4">
-              <span className="text-4xl">🔄</span>
+            <div className="flex items-center gap-4 mb-6">
+              <span className="text-5xl lg:text-6xl">🔄</span>
               <div>
-                <h2 className="text-2xl font-bold text-yellow-400">L6 Presentazione + L5 Sessione</h2>
-                <p className="text-gray-400">Protocol Buffers + TLS 1.3 + WebSocket</p>
+                <h2 className="text-3xl lg:text-4xl font-bold text-yellow-400">L6 Presentazione + L5 Sessione</h2>
+                <p className="text-lg lg:text-xl text-gray-400">Protocol Buffers + TLS 1.3 + WebSocket</p>
               </div>
             </div>
 
-            <div className="flex-1 grid grid-cols-2 gap-4">
-              <div className="bg-black/30 rounded-lg p-4 border border-yellow-500/30">
-                <h3 className="text-sm font-bold text-yellow-400 mb-3">L6 - PRESENTAZIONE</h3>
+            <div className="flex-1 grid grid-cols-2 gap-6">
+              <div className="bg-black/30 rounded-lg p-5 border border-yellow-500/30 flex flex-col">
+                <h3 className="text-lg lg:text-xl font-bold text-yellow-400 mb-4">L6 - PRESENTAZIONE</h3>
 
-                <div className="space-y-3">
-                  <div className="bg-yellow-500/10 p-3 rounded">
-                    <h4 className="text-xs font-bold text-yellow-300 mb-2">Serializzazione Protobuf</h4>
-                    <div className="text-xs font-mono text-gray-300">
+                <div className="space-y-4 flex-1 flex flex-col justify-around">
+                  <div className="bg-yellow-500/10 p-4 rounded">
+                    <h4 className="text-base lg:text-lg font-bold text-yellow-300 mb-3">Serializzazione Protobuf</h4>
+                    <div className="text-sm lg:text-base font-mono text-gray-300 space-y-1">
                       <div>0A 20 [message_id: 32 byte]</div>
                       <div>12 1E [sender: 30 byte]</div>
                       <div>1A 1E [recipient: 30 byte]</div>
@@ -740,9 +743,9 @@ export default function ISOOSIPresentation() {
                     </div>
                   </div>
 
-                  <div className="bg-yellow-500/10 p-3 rounded">
-                    <h4 className="text-xs font-bold text-yellow-300 mb-2">Crittografia TLS 1.3</h4>
-                    <div className="text-xs space-y-1">
+                  <div className="bg-yellow-500/10 p-4 rounded">
+                    <h4 className="text-base lg:text-lg font-bold text-yellow-300 mb-3">Crittografia TLS 1.3</h4>
+                    <div className="text-sm lg:text-base space-y-2">
                       <div className="flex justify-between">
                         <span className="text-gray-400">Content Type:</span>
                         <span className="text-yellow-300">0x17 (App Data)</span>
@@ -758,48 +761,48 @@ export default function ISOOSIPresentation() {
                     </div>
                   </div>
 
-                  <div className="text-xs text-gray-400 text-center">
+                  <div className="text-base lg:text-lg text-gray-400 text-center">
                     324 byte → <span className="text-yellow-400 font-bold">429 byte</span>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-black/30 rounded-lg p-4 border border-cyan-500/30">
-                <h3 className="text-sm font-bold text-cyan-400 mb-3">L5 - SESSIONE</h3>
+              <div className="bg-black/30 rounded-lg p-5 border border-cyan-500/30 flex flex-col">
+                <h3 className="text-lg lg:text-xl font-bold text-cyan-400 mb-4">L5 - SESSIONE</h3>
 
-                <div className="space-y-3">
-                  <div className="bg-cyan-500/10 p-3 rounded">
-                    <h4 className="text-xs font-bold text-cyan-300 mb-2">WebSocket Frame</h4>
-                    <div className="grid grid-cols-2 gap-2 text-xs">
-                      <div className="bg-black/30 p-2 rounded">
+                <div className="space-y-4 flex-1 flex flex-col justify-around">
+                  <div className="bg-cyan-500/10 p-4 rounded">
+                    <h4 className="text-base lg:text-lg font-bold text-cyan-300 mb-3">WebSocket Frame</h4>
+                    <div className="grid grid-cols-2 gap-3 text-sm lg:text-base">
+                      <div className="bg-black/30 p-3 rounded">
                         <div className="text-gray-400">FIN</div>
-                        <div className="text-cyan-300 font-mono">1</div>
+                        <div className="text-cyan-300 font-mono text-lg">1</div>
                       </div>
-                      <div className="bg-black/30 p-2 rounded">
+                      <div className="bg-black/30 p-3 rounded">
                         <div className="text-gray-400">Opcode</div>
-                        <div className="text-cyan-300 font-mono">0x2 (binary)</div>
+                        <div className="text-cyan-300 font-mono text-lg">0x2 (binary)</div>
                       </div>
-                      <div className="bg-black/30 p-2 rounded">
+                      <div className="bg-black/30 p-3 rounded">
                         <div className="text-gray-400">MASK</div>
-                        <div className="text-cyan-300 font-mono">1</div>
+                        <div className="text-cyan-300 font-mono text-lg">1</div>
                       </div>
-                      <div className="bg-black/30 p-2 rounded">
+                      <div className="bg-black/30 p-3 rounded">
                         <div className="text-gray-400">Length</div>
-                        <div className="text-cyan-300 font-mono">429</div>
+                        <div className="text-cyan-300 font-mono text-lg">429</div>
                       </div>
                     </div>
                   </div>
 
-                  <div className="bg-cyan-500/10 p-3 rounded">
-                    <h4 className="text-xs font-bold text-cyan-300 mb-2">Masking (XOR)</h4>
-                    <div className="text-xs font-mono space-y-1">
+                  <div className="bg-cyan-500/10 p-4 rounded">
+                    <h4 className="text-base lg:text-lg font-bold text-cyan-300 mb-3">Masking (XOR)</h4>
+                    <div className="text-sm lg:text-base font-mono space-y-2">
                       <div><span className="text-gray-400">Key:</span> <span className="text-cyan-300">37 4E 8A F1</span></div>
                       <div><span className="text-gray-400">Original:</span> <span className="text-gray-300">17 03 03 01</span></div>
                       <div><span className="text-gray-400">Masked:</span> <span className="text-cyan-300">20 4D 89 F0</span></div>
                     </div>
                   </div>
 
-                  <div className="text-xs text-gray-400 text-center">
+                  <div className="text-base lg:text-lg text-gray-400 text-center">
                     429 byte → <span className="text-cyan-400 font-bold">437 byte</span>
                   </div>
                 </div>
@@ -811,91 +814,91 @@ export default function ISOOSIPresentation() {
       case 4: // L4-L3 Down
         return (
           <div className="h-full flex flex-col">
-            <div className="flex items-center gap-4 mb-4">
-              <span className="text-4xl">🚚</span>
+            <div className="flex items-center gap-4 mb-6">
+              <span className="text-5xl lg:text-6xl">🚚</span>
               <div>
-                <h2 className="text-2xl font-bold text-green-400">L4 Trasporto + L3 Rete</h2>
-                <p className="text-gray-400">TCP + IPv4 + NAT</p>
+                <h2 className="text-3xl lg:text-4xl font-bold text-green-400">L4 Trasporto + L3 Rete</h2>
+                <p className="text-lg lg:text-xl text-gray-400">TCP + IPv4 + NAT</p>
               </div>
             </div>
 
-            <div className="flex-1 grid grid-cols-2 gap-4">
-              <div className="bg-black/30 rounded-lg p-4 border border-green-500/30">
-                <h3 className="text-sm font-bold text-green-400 mb-3">L4 - TCP SEGMENT</h3>
+            <div className="flex-1 grid grid-cols-2 gap-6">
+              <div className="bg-black/30 rounded-lg p-5 border border-green-500/30 flex flex-col">
+                <h3 className="text-lg lg:text-xl font-bold text-green-400 mb-4">L4 - TCP SEGMENT</h3>
 
-                <div className="bg-green-500/10 p-3 rounded mb-3">
-                  <div className="grid grid-cols-2 gap-2 text-xs">
+                <div className="bg-green-500/10 p-4 rounded mb-4 flex-1">
+                  <div className="grid grid-cols-2 gap-4 text-sm lg:text-base">
                     <div>
                       <span className="text-gray-400">Src Port:</span>
-                      <div className="text-green-300 font-mono">52431</div>
+                      <div className="text-green-300 font-mono text-xl lg:text-2xl">52431</div>
                     </div>
                     <div>
                       <span className="text-gray-400">Dst Port:</span>
-                      <div className="text-green-300 font-mono">443</div>
+                      <div className="text-green-300 font-mono text-xl lg:text-2xl">443</div>
                     </div>
                     <div>
                       <span className="text-gray-400">Seq Number:</span>
-                      <div className="text-green-300 font-mono">1513893917</div>
+                      <div className="text-green-300 font-mono text-lg">1513893917</div>
                     </div>
                     <div>
                       <span className="text-gray-400">Ack Number:</span>
-                      <div className="text-green-300 font-mono">2407431516</div>
+                      <div className="text-green-300 font-mono text-lg">2407431516</div>
                     </div>
                   </div>
                 </div>
 
-                <div className="flex gap-2 mb-3">
+                <div className="flex gap-3 mb-4">
                   {['ACK', 'PSH'].map(flag => (
-                    <span key={flag} className="px-2 py-1 bg-green-500 text-black text-xs font-bold rounded">
+                    <span key={flag} className="px-4 py-2 bg-green-500 text-black text-base lg:text-lg font-bold rounded">
                       {flag}
                     </span>
                   ))}
                   {['SYN', 'FIN', 'RST'].map(flag => (
-                    <span key={flag} className="px-2 py-1 bg-gray-700 text-gray-400 text-xs rounded">
+                    <span key={flag} className="px-4 py-2 bg-gray-700 text-gray-400 text-base lg:text-lg rounded">
                       {flag}
                     </span>
                   ))}
                 </div>
 
-                <div className="text-xs text-gray-400">
+                <div className="text-base lg:text-lg text-gray-400">
                   Header: 32 byte | 437 byte → <span className="text-green-400 font-bold">469 byte</span>
                 </div>
               </div>
 
-              <div className="bg-black/30 rounded-lg p-4 border border-purple-500/30">
-                <h3 className="text-sm font-bold text-purple-400 mb-3">L3 - IP PACKET + NAT</h3>
+              <div className="bg-black/30 rounded-lg p-5 border border-purple-500/30 flex flex-col">
+                <h3 className="text-lg lg:text-xl font-bold text-purple-400 mb-4">L3 - IP PACKET + NAT</h3>
 
-                <div className="bg-purple-500/10 p-3 rounded mb-3">
-                  <div className="space-y-2 text-xs">
-                    <div className="flex items-center gap-2">
-                      <span className="text-gray-400 w-20">Src IP:</span>
+                <div className="bg-purple-500/10 p-4 rounded mb-4 flex-1">
+                  <div className="space-y-4 text-sm lg:text-base">
+                    <div className="flex items-center gap-3">
+                      <span className="text-gray-400 w-24">Src IP:</span>
                       <span className="text-red-400 line-through">192.168.1.100</span>
-                      <span className="text-green-400">→</span>
-                      <span className="text-purple-300">82.53.147.201</span>
+                      <span className="text-green-400 text-xl">→</span>
+                      <span className="text-purple-300 font-mono">82.53.147.201</span>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-gray-400 w-20">Dst IP:</span>
-                      <span className="text-purple-300">157.240.1.52</span>
+                    <div className="flex items-center gap-3">
+                      <span className="text-gray-400 w-24">Dst IP:</span>
+                      <span className="text-purple-300 font-mono">157.240.1.52</span>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-gray-400 w-20">TTL:</span>
-                      <span className="text-purple-300">64</span>
+                    <div className="flex items-center gap-3">
+                      <span className="text-gray-400 w-24">TTL:</span>
+                      <span className="text-purple-300 font-mono text-xl">64</span>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-gray-400 w-20">Protocol:</span>
-                      <span className="text-purple-300">6 (TCP)</span>
+                    <div className="flex items-center gap-3">
+                      <span className="text-gray-400 w-24">Protocol:</span>
+                      <span className="text-purple-300 font-mono">6 (TCP)</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="bg-orange-500/20 p-2 rounded border border-orange-500/50 mb-3">
-                  <div className="text-xs font-bold text-orange-400 mb-1">🔄 NAT Translation</div>
-                  <div className="text-xs text-gray-300">
+                <div className="bg-orange-500/20 p-4 rounded border border-orange-500/50 mb-4">
+                  <div className="text-base lg:text-lg font-bold text-orange-400 mb-2">🔄 NAT Translation</div>
+                  <div className="text-base lg:text-lg text-gray-300 font-mono">
                     192.168.1.100:52431 → 82.53.147.201:34567
                   </div>
                 </div>
 
-                <div className="text-xs text-gray-400">
+                <div className="text-base lg:text-lg text-gray-400">
                   Header: 20 byte | 469 byte → <span className="text-purple-400 font-bold">489 byte</span>
                 </div>
               </div>
@@ -906,84 +909,84 @@ export default function ISOOSIPresentation() {
       case 5: // L2-L1 Down (WiFi)
         return (
           <div className="h-full flex flex-col">
-            <div className="flex items-center gap-4 mb-4">
-              <span className="text-4xl">📡</span>
+            <div className="flex items-center gap-4 mb-6">
+              <span className="text-5xl lg:text-6xl">📡</span>
               <div>
-                <h2 className="text-2xl font-bold text-orange-400">L2 Data Link + L1 Fisico</h2>
-                <p className="text-gray-400">IEEE 802.11 WiFi + OFDM</p>
+                <h2 className="text-3xl lg:text-4xl font-bold text-orange-400">L2 Data Link + L1 Fisico</h2>
+                <p className="text-lg lg:text-xl text-gray-400">IEEE 802.11 WiFi + OFDM</p>
               </div>
             </div>
 
-            <div className="flex-1 grid grid-cols-2 gap-4">
-              <div className="bg-black/30 rounded-lg p-4 border border-orange-500/30">
-                <h3 className="text-sm font-bold text-orange-400 mb-3">L2 - WIFI FRAME (802.11)</h3>
+            <div className="flex-1 grid grid-cols-2 gap-6">
+              <div className="bg-black/30 rounded-lg p-5 border border-orange-500/30 flex flex-col">
+                <h3 className="text-lg lg:text-xl font-bold text-orange-400 mb-4">L2 - WIFI FRAME (802.11)</h3>
 
-                <div className="space-y-2 text-xs">
-                  <div className="bg-orange-500/10 p-2 rounded">
-                    <div className="grid grid-cols-2 gap-2">
+                <div className="space-y-4 text-sm lg:text-base flex-1">
+                  <div className="bg-orange-500/10 p-4 rounded">
+                    <div className="grid grid-cols-2 gap-4">
                       <div>
                         <span className="text-gray-400">Frame Control:</span>
-                        <div className="text-orange-300 font-mono">0x08 0x41</div>
+                        <div className="text-orange-300 font-mono text-lg lg:text-xl">0x08 0x41</div>
                       </div>
                       <div>
                         <span className="text-gray-400">Duration:</span>
-                        <div className="text-orange-300 font-mono">125 μs</div>
+                        <div className="text-orange-300 font-mono text-lg lg:text-xl">125 μs</div>
                       </div>
                     </div>
                   </div>
 
-                  <div className="bg-orange-500/10 p-2 rounded">
-                    <div className="text-gray-400 mb-1">Indirizzi MAC:</div>
-                    <div className="space-y-1 font-mono text-orange-300">
+                  <div className="bg-orange-500/10 p-4 rounded">
+                    <div className="text-gray-400 mb-2 text-base">Indirizzi MAC:</div>
+                    <div className="space-y-2 font-mono text-orange-300 text-base lg:text-lg">
                       <div>RA: AA:BB:CC:DD:EE:FF (AP)</div>
                       <div>TA: 11:22:33:44:55:66 (Phone)</div>
                       <div>DA: 00:11:22:33:44:55 (Router)</div>
                     </div>
                   </div>
 
-                  <div className="bg-red-500/20 p-2 rounded border border-red-500/50">
-                    <div className="text-red-400 font-bold mb-1">🔐 WPA2-CCMP</div>
-                    <div className="text-gray-300">AES-128-CCM + MIC 8 byte</div>
+                  <div className="bg-red-500/20 p-4 rounded border border-red-500/50">
+                    <div className="text-red-400 font-bold mb-2 text-lg">🔐 WPA2-CCMP</div>
+                    <div className="text-gray-300 text-base lg:text-lg">AES-128-CCM + MIC 8 byte</div>
                   </div>
                 </div>
 
-                <div className="text-xs text-gray-400 mt-3">
+                <div className="text-base lg:text-lg text-gray-400 mt-4">
                   489 byte → <span className="text-orange-400 font-bold">549 byte</span>
                 </div>
               </div>
 
-              <div className="bg-black/30 rounded-lg p-4 border border-cyan-500/30">
-                <h3 className="text-sm font-bold text-cyan-400 mb-3">L1 - TRASMISSIONE RADIO</h3>
+              <div className="bg-black/30 rounded-lg p-5 border border-cyan-500/30 flex flex-col">
+                <h3 className="text-lg lg:text-xl font-bold text-cyan-400 mb-4">L1 - TRASMISSIONE RADIO</h3>
 
-                <div className="space-y-2 text-xs">
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="bg-cyan-500/10 p-2 rounded">
+                <div className="space-y-4 text-sm lg:text-base flex-1">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="bg-cyan-500/10 p-4 rounded">
                       <div className="text-gray-400">Frequenza</div>
-                      <div className="text-cyan-300 font-bold">5180 MHz</div>
+                      <div className="text-cyan-300 font-bold text-xl lg:text-2xl">5180 MHz</div>
                     </div>
-                    <div className="bg-cyan-500/10 p-2 rounded">
+                    <div className="bg-cyan-500/10 p-4 rounded">
                       <div className="text-gray-400">Bandwidth</div>
-                      <div className="text-cyan-300 font-bold">80 MHz</div>
+                      <div className="text-cyan-300 font-bold text-xl lg:text-2xl">80 MHz</div>
                     </div>
-                    <div className="bg-cyan-500/10 p-2 rounded">
+                    <div className="bg-cyan-500/10 p-4 rounded">
                       <div className="text-gray-400">Modulazione</div>
-                      <div className="text-cyan-300 font-bold">256-QAM</div>
+                      <div className="text-cyan-300 font-bold text-xl lg:text-2xl">256-QAM</div>
                     </div>
-                    <div className="bg-cyan-500/10 p-2 rounded">
+                    <div className="bg-cyan-500/10 p-4 rounded">
                       <div className="text-gray-400">Tempo TX</div>
-                      <div className="text-cyan-300 font-bold">~52 μs</div>
+                      <div className="text-cyan-300 font-bold text-xl lg:text-2xl">~52 μs</div>
                     </div>
                   </div>
 
-                  <div className="bg-cyan-500/10 p-2 rounded">
-                    <div className="text-gray-400 mb-1">OFDM Symbol</div>
-                    <div className="text-cyan-300">234 subcarrier × 8 bit × 2 streams</div>
+                  <div className="bg-cyan-500/10 p-4 rounded">
+                    <div className="text-gray-400 mb-2">OFDM Symbol</div>
+                    <div className="text-cyan-300 text-lg">234 subcarrier × 8 bit × 2 streams</div>
                   </div>
                 </div>
 
                 <SignalWave active={animationStep > 2} />
 
-                <div className="text-center text-cyan-400 text-lg mt-2">
+                <div className="text-center text-cyan-400 text-xl lg:text-2xl mt-4">
                   ∿∿∿ Onde Radio a 5 GHz ∿∿∿
                 </div>
               </div>
@@ -995,18 +998,18 @@ export default function ISOOSIPresentation() {
         return (
           <div className="h-full flex flex-col">
             <div className="flex items-center gap-4 mb-4">
-              <span className="text-4xl">🌍</span>
+              <span className="text-5xl lg:text-6xl">🌍</span>
               <div>
-                <h2 className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+                <h2 className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
                   Viaggio attraverso Internet
                 </h2>
-                <p className="text-gray-400">Il pacchetto attraversa multiple reti</p>
+                <p className="text-lg lg:text-xl text-gray-400">Il pacchetto attraversa multiple reti</p>
               </div>
             </div>
 
             <NetworkDiagram activeHop={Math.min(animationStep, 7)} />
 
-            <div className="flex-1 grid grid-cols-3 gap-3 mt-4">
+            <div className="flex-1 grid grid-cols-3 gap-4 mt-6">
               {[
                 { hop: 1, name: 'Router Casa', action: 'NAT, WiFi→Ethernet', ttl: '64→63' },
                 { hop: 2, name: 'OLT ISP', action: 'Ottico→Elettrico', ttl: '63→62' },
@@ -1017,21 +1020,21 @@ export default function ISOOSIPresentation() {
               ].map((item, idx) => (
                 <div
                   key={idx}
-                  className={`p-2 rounded border text-xs transition-all duration-300 ${
+                  className={`p-4 rounded border text-sm lg:text-base transition-all duration-300 ${
                     animationStep > idx
                       ? 'border-cyan-500 bg-cyan-500/10'
                       : 'border-gray-700 bg-gray-800/50 opacity-50'
                   }`}
                 >
-                  <div className="font-bold text-cyan-400">HOP {item.hop}: {item.name}</div>
+                  <div className="font-bold text-cyan-400 text-base lg:text-lg">HOP {item.hop}: {item.name}</div>
                   <div className="text-gray-400">{item.action}</div>
-                  <div className="text-yellow-400">TTL: {item.ttl}</div>
+                  <div className="text-yellow-400 text-lg font-mono">TTL: {item.ttl}</div>
                 </div>
               ))}
             </div>
 
-            <div className="mt-4 p-3 bg-purple-500/20 rounded-lg border border-purple-500/50">
-              <div className="text-sm text-purple-300">
+            <div className="mt-6 p-4 bg-purple-500/20 rounded-lg border border-purple-500/50">
+              <div className="text-base lg:text-lg text-purple-300">
                 <span className="font-bold">⚠️ Sul server WhatsApp:</span> Il contenuto "ciao" rimane criptato E2E.
                 Il server può solo leggere i metadata e inoltrare il messaggio.
               </div>
@@ -1042,76 +1045,76 @@ export default function ISOOSIPresentation() {
       case 7: // L1-L2 Up (Ethernet)
         return (
           <div className="h-full flex flex-col">
-            <div className="flex items-center gap-4 mb-4">
-              <span className="text-4xl">💻</span>
+            <div className="flex items-center gap-4 mb-6">
+              <span className="text-5xl lg:text-6xl">💻</span>
               <div>
-                <h2 className="text-2xl font-bold text-cyan-400">L1 + L2 - Ricezione sul PC</h2>
-                <p className="text-gray-400">Gigabit Ethernet (1000BASE-T)</p>
+                <h2 className="text-3xl lg:text-4xl font-bold text-cyan-400">L1 + L2 - Ricezione sul PC</h2>
+                <p className="text-lg lg:text-xl text-gray-400">Gigabit Ethernet (1000BASE-T)</p>
               </div>
-              <div className="ml-auto px-3 py-1 bg-green-500/20 border border-green-500 rounded text-green-400 text-sm">
+              <div className="ml-auto px-4 py-2 bg-green-500/20 border border-green-500 rounded text-green-400 text-base lg:text-lg">
                 ↑ DEINCAPSULAMENTO
               </div>
             </div>
 
-            <div className="flex-1 grid grid-cols-2 gap-4">
-              <div className="bg-black/30 rounded-lg p-4 border border-cyan-500/30">
-                <h3 className="text-sm font-bold text-cyan-400 mb-3">L1 - SEGNALE ELETTRICO</h3>
+            <div className="flex-1 grid grid-cols-2 gap-6">
+              <div className="bg-black/30 rounded-lg p-5 border border-cyan-500/30 flex flex-col">
+                <h3 className="text-lg lg:text-xl font-bold text-cyan-400 mb-4">L1 - SEGNALE ELETTRICO</h3>
 
-                <div className="space-y-3">
-                  <div className="bg-cyan-500/10 p-3 rounded">
-                    <div className="text-xs text-gray-400 mb-2">Codifica PAM-5 (5 livelli)</div>
-                    <div className="flex justify-around items-end h-16">
+                <div className="space-y-4 flex-1">
+                  <div className="bg-cyan-500/10 p-4 rounded">
+                    <div className="text-base text-gray-400 mb-3">Codifica PAM-5 (5 livelli)</div>
+                    <div className="flex justify-around items-end h-24">
                       {['+1V', '+0.5V', '0V', '-0.5V', '-1V'].map((v, i) => (
                         <div key={i} className="text-center">
                           <div
-                            className="w-4 bg-cyan-500 rounded-t"
-                            style={{ height: `${40 - i * 8}px` }}
+                            className="w-8 bg-cyan-500 rounded-t"
+                            style={{ height: `${60 - i * 12}px` }}
                           />
-                          <div className="text-xs text-cyan-300 mt-1">{v}</div>
+                          <div className="text-sm lg:text-base text-cyan-300 mt-2">{v}</div>
                         </div>
                       ))}
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-2 text-xs">
-                    <div className="bg-cyan-500/10 p-2 rounded">
+                  <div className="grid grid-cols-2 gap-4 text-base">
+                    <div className="bg-cyan-500/10 p-4 rounded">
                       <div className="text-gray-400">Cavo</div>
-                      <div className="text-cyan-300">Cat5e/Cat6</div>
+                      <div className="text-cyan-300 text-xl font-bold">Cat5e/Cat6</div>
                     </div>
-                    <div className="bg-cyan-500/10 p-2 rounded">
+                    <div className="bg-cyan-500/10 p-4 rounded">
                       <div className="text-gray-400">Velocità</div>
-                      <div className="text-cyan-300">1 Gbps</div>
+                      <div className="text-cyan-300 text-xl font-bold">1 Gbps</div>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-black/30 rounded-lg p-4 border border-orange-500/30">
-                <h3 className="text-sm font-bold text-orange-400 mb-3">L2 - FRAME ETHERNET</h3>
+              <div className="bg-black/30 rounded-lg p-5 border border-orange-500/30 flex flex-col">
+                <h3 className="text-lg lg:text-xl font-bold text-orange-400 mb-4">L2 - FRAME ETHERNET</h3>
 
-                <div className="space-y-2 text-xs">
-                  <div className="bg-orange-500/10 p-2 rounded font-mono">
-                    <div className="flex justify-between">
+                <div className="space-y-4 text-base flex-1">
+                  <div className="bg-orange-500/10 p-4 rounded font-mono space-y-3">
+                    <div className="flex justify-between text-base lg:text-lg">
                       <span className="text-gray-400">Dest MAC:</span>
                       <span className="text-green-400">78:45:C4:AB:CD:EF ✓</span>
                     </div>
-                    <div className="flex justify-between">
+                    <div className="flex justify-between text-base lg:text-lg">
                       <span className="text-gray-400">Src MAC:</span>
                       <span className="text-orange-300">00:11:22:33:44:55</span>
                     </div>
-                    <div className="flex justify-between">
+                    <div className="flex justify-between text-base lg:text-lg">
                       <span className="text-gray-400">EtherType:</span>
                       <span className="text-orange-300">0x0800 (IPv4)</span>
                     </div>
                   </div>
 
-                  <div className="bg-green-500/20 p-2 rounded border border-green-500/50">
-                    <div className="text-green-400 font-bold">✓ FCS Verificato (CRC-32)</div>
-                    <div className="text-gray-300">Frame integro, passa al L3</div>
+                  <div className="bg-green-500/20 p-4 rounded border border-green-500/50">
+                    <div className="text-green-400 font-bold text-lg lg:text-xl">✓ FCS Verificato (CRC-32)</div>
+                    <div className="text-gray-300 text-base lg:text-lg">Frame integro, passa al L3</div>
                   </div>
                 </div>
 
-                <div className="mt-3 text-xs text-gray-400">
+                <div className="mt-4 text-base lg:text-lg text-gray-400">
                   <span className="text-orange-400 font-bold">549 byte</span> → rimuovi header → 489 byte
                 </div>
               </div>
@@ -1122,73 +1125,73 @@ export default function ISOOSIPresentation() {
       case 8: // L3-L4 Up
         return (
           <div className="h-full flex flex-col">
-            <div className="flex items-center gap-4 mb-4">
-              <span className="text-4xl">🔍</span>
+            <div className="flex items-center gap-4 mb-6">
+              <span className="text-5xl lg:text-6xl">🔍</span>
               <div>
-                <h2 className="text-2xl font-bold text-purple-400">L3 + L4 - Verifica e Consegna</h2>
-                <p className="text-gray-400">IP Verification + TCP ACK</p>
+                <h2 className="text-3xl lg:text-4xl font-bold text-purple-400">L3 + L4 - Verifica e Consegna</h2>
+                <p className="text-lg lg:text-xl text-gray-400">IP Verification + TCP ACK</p>
               </div>
             </div>
 
-            <div className="flex-1 grid grid-cols-2 gap-4">
-              <div className="bg-black/30 rounded-lg p-4 border border-purple-500/30">
-                <h3 className="text-sm font-bold text-purple-400 mb-3">L3 - VERIFICA IP</h3>
+            <div className="flex-1 grid grid-cols-2 gap-6">
+              <div className="bg-black/30 rounded-lg p-5 border border-purple-500/30 flex flex-col">
+                <h3 className="text-lg lg:text-xl font-bold text-purple-400 mb-4">L3 - VERIFICA IP</h3>
 
-                <div className="space-y-2 text-xs">
-                  <div className="bg-purple-500/10 p-2 rounded font-mono">
-                    <div className="flex justify-between">
+                <div className="space-y-4 text-base flex-1">
+                  <div className="bg-purple-500/10 p-4 rounded font-mono space-y-3">
+                    <div className="flex justify-between text-base lg:text-lg">
                       <span className="text-gray-400">Src IP:</span>
                       <span className="text-purple-300">157.240.1.52</span>
                     </div>
-                    <div className="flex justify-between">
+                    <div className="flex justify-between text-base lg:text-lg">
                       <span className="text-gray-400">Dest IP:</span>
                       <span className="text-green-400">192.168.2.50 ✓ (questo PC)</span>
                     </div>
-                    <div className="flex justify-between">
+                    <div className="flex justify-between text-base lg:text-lg">
                       <span className="text-gray-400">TTL:</span>
-                      <span className="text-purple-300">55</span>
+                      <span className="text-purple-300 text-xl">55</span>
                     </div>
-                    <div className="flex justify-between">
+                    <div className="flex justify-between text-base lg:text-lg">
                       <span className="text-gray-400">Protocol:</span>
                       <span className="text-purple-300">6 → TCP</span>
                     </div>
                   </div>
 
-                  <div className="bg-green-500/20 p-2 rounded border border-green-500/50">
-                    <div className="text-green-400 font-bold">✓ Header Checksum OK</div>
-                    <div className="text-green-400 font-bold">✓ IP è per questo host</div>
+                  <div className="bg-green-500/20 p-4 rounded border border-green-500/50">
+                    <div className="text-green-400 font-bold text-lg lg:text-xl">✓ Header Checksum OK</div>
+                    <div className="text-green-400 font-bold text-lg lg:text-xl">✓ IP è per questo host</div>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-black/30 rounded-lg p-4 border border-green-500/30">
-                <h3 className="text-sm font-bold text-green-400 mb-3">L4 - TCP PROCESSING</h3>
+              <div className="bg-black/30 rounded-lg p-5 border border-green-500/30 flex flex-col">
+                <h3 className="text-lg lg:text-xl font-bold text-green-400 mb-4">L4 - TCP PROCESSING</h3>
 
-                <div className="space-y-2 text-xs">
-                  <div className="bg-green-500/10 p-2 rounded font-mono">
-                    <div className="flex justify-between">
+                <div className="space-y-4 text-base flex-1">
+                  <div className="bg-green-500/10 p-4 rounded font-mono space-y-3">
+                    <div className="flex justify-between text-base lg:text-lg">
                       <span className="text-gray-400">Src Port:</span>
-                      <span className="text-green-300">443</span>
+                      <span className="text-green-300 text-xl">443</span>
                     </div>
-                    <div className="flex justify-between">
+                    <div className="flex justify-between text-base lg:text-lg">
                       <span className="text-gray-400">Dest Port:</span>
                       <span className="text-green-400">58234 ✓ (Browser socket)</span>
                     </div>
-                    <div className="flex justify-between">
+                    <div className="flex justify-between text-base lg:text-lg">
                       <span className="text-gray-400">Seq:</span>
                       <span className="text-green-300">8756432100</span>
                     </div>
                   </div>
 
-                  <div className="bg-green-500/20 p-2 rounded border border-green-500/50">
-                    <div className="text-green-400 font-bold">✓ Checksum TCP valido</div>
-                    <div className="text-green-400 font-bold">✓ Sequence number corretto</div>
-                    <div className="text-green-400 font-bold">✓ PSH flag → push immediato</div>
+                  <div className="bg-green-500/20 p-4 rounded border border-green-500/50">
+                    <div className="text-green-400 font-bold text-base lg:text-lg">✓ Checksum TCP valido</div>
+                    <div className="text-green-400 font-bold text-base lg:text-lg">✓ Sequence number corretto</div>
+                    <div className="text-green-400 font-bold text-base lg:text-lg">✓ PSH flag → push immediato</div>
                   </div>
 
-                  <div className="bg-blue-500/20 p-2 rounded border border-blue-500/50">
-                    <div className="text-blue-400 font-bold">📤 Invio ACK</div>
-                    <div className="text-gray-300">ACK: 8756432537</div>
+                  <div className="bg-blue-500/20 p-4 rounded border border-blue-500/50">
+                    <div className="text-blue-400 font-bold text-lg lg:text-xl">📤 Invio ACK</div>
+                    <div className="text-gray-300 text-lg font-mono">ACK: 8756432537</div>
                   </div>
                 </div>
               </div>
@@ -1199,63 +1202,63 @@ export default function ISOOSIPresentation() {
       case 9: // L5-L6-L7 Up
         return (
           <div className="h-full flex flex-col">
-            <div className="flex items-center gap-4 mb-4">
-              <span className="text-4xl">🔓</span>
+            <div className="flex items-center gap-4 mb-6">
+              <span className="text-5xl lg:text-6xl">🔓</span>
               <div>
-                <h2 className="text-2xl font-bold text-yellow-400">L5-L6-L7 - Decifratura e Visualizzazione</h2>
-                <p className="text-gray-400">WebSocket → TLS → Signal → "ciao"</p>
+                <h2 className="text-3xl lg:text-4xl font-bold text-yellow-400">L5-L6-L7 - Decifratura e Visualizzazione</h2>
+                <p className="text-lg lg:text-xl text-gray-400">WebSocket → TLS → Signal → "ciao"</p>
               </div>
             </div>
 
-            <div className="flex-1 grid grid-cols-3 gap-3">
-              <div className="bg-black/30 rounded-lg p-3 border border-cyan-500/30">
-                <h3 className="text-sm font-bold text-cyan-400 mb-2">L5 - WEBSOCKET</h3>
-                <div className="text-xs space-y-2">
-                  <div className="bg-cyan-500/10 p-2 rounded">
+            <div className="flex-1 grid grid-cols-3 gap-4">
+              <div className="bg-black/30 rounded-lg p-5 border border-cyan-500/30 flex flex-col">
+                <h3 className="text-lg lg:text-xl font-bold text-cyan-400 mb-4">L5 - WEBSOCKET</h3>
+                <div className="text-base lg:text-lg space-y-4 flex-1">
+                  <div className="bg-cyan-500/10 p-4 rounded space-y-2">
                     <div>FIN: 1 ✓</div>
                     <div>Opcode: binary ✓</div>
                     <div>MASK: 0 (server)</div>
                   </div>
-                  <div className="text-cyan-400">437 → 429 byte</div>
+                  <div className="text-cyan-400 text-xl font-bold">437 → 429 byte</div>
                 </div>
               </div>
 
-              <div className="bg-black/30 rounded-lg p-3 border border-yellow-500/30">
-                <h3 className="text-sm font-bold text-yellow-400 mb-2">L6 - TLS DECRYPT</h3>
-                <div className="text-xs space-y-2">
-                  <div className="bg-yellow-500/10 p-2 rounded">
+              <div className="bg-black/30 rounded-lg p-5 border border-yellow-500/30 flex flex-col">
+                <h3 className="text-lg lg:text-xl font-bold text-yellow-400 mb-4">L6 - TLS DECRYPT</h3>
+                <div className="text-base lg:text-lg space-y-4 flex-1">
+                  <div className="bg-yellow-500/10 p-4 rounded space-y-2">
                     <div>Verify Auth Tag ✓</div>
                     <div>AES-256-GCM</div>
                     <div>Deserialize Protobuf</div>
                   </div>
-                  <div className="text-yellow-400">429 → 324 byte</div>
+                  <div className="text-yellow-400 text-xl font-bold">429 → 324 byte</div>
                 </div>
               </div>
 
-              <div className="bg-black/30 rounded-lg p-3 border border-red-500/30">
-                <h3 className="text-sm font-bold text-red-400 mb-2">L7 - SIGNAL E2E</h3>
-                <div className="text-xs space-y-2">
-                  <div className="bg-red-500/10 p-2 rounded">
+              <div className="bg-black/30 rounded-lg p-5 border border-red-500/30 flex flex-col">
+                <h3 className="text-lg lg:text-xl font-bold text-red-400 mb-4">L7 - SIGNAL E2E</h3>
+                <div className="text-base lg:text-lg space-y-4 flex-1">
+                  <div className="bg-red-500/10 p-4 rounded space-y-2">
                     <div>ECDH Key Exchange</div>
                     <div>Double Ratchet</div>
                     <div>AES-256-GCM</div>
                   </div>
-                  <div className="text-red-400">324 → 4 byte</div>
+                  <div className="text-red-400 text-xl font-bold">324 → 4 byte</div>
                 </div>
               </div>
             </div>
 
-            <div className="mt-4 p-4 bg-gradient-to-r from-green-500/20 to-cyan-500/20 rounded-lg border border-green-500/50">
+            <div className="mt-6 p-6 bg-gradient-to-r from-green-500/20 to-cyan-500/20 rounded-lg border border-green-500/50">
               <div className="text-center">
-                <div className="text-sm text-gray-400 mb-2">Messaggio decifrato:</div>
-                <div className="text-5xl font-bold text-green-400 animate-pulse">
+                <div className="text-lg lg:text-xl text-gray-400 mb-3">Messaggio decifrato:</div>
+                <div className="text-6xl lg:text-7xl font-bold text-green-400 animate-pulse">
                   "ciao"
                 </div>
               </div>
             </div>
 
-            <div className="mt-4 p-3 bg-black/30 rounded-lg border border-gray-700">
-              <div className="text-xs text-center text-gray-400">
+            <div className="mt-4 p-4 bg-black/30 rounded-lg border border-gray-700">
+              <div className="text-base lg:text-lg text-center text-gray-400">
                 Il browser aggiorna il DOM e mostra il messaggio nella chat di WhatsApp Web
               </div>
             </div>
@@ -1265,15 +1268,15 @@ export default function ISOOSIPresentation() {
       case 10: // Summary
         return (
           <div className="h-full flex flex-col">
-            <h2 className="text-2xl font-bold text-center bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent mb-4">
+            <h2 className="text-3xl lg:text-4xl font-bold text-center bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent mb-6">
               📊 Riepilogo del Viaggio
             </h2>
 
-            <div className="flex-1 grid grid-cols-2 gap-4">
-              <div className="bg-black/30 rounded-lg p-4 border border-cyan-500/30">
-                <h3 className="text-sm font-bold text-cyan-400 mb-3">OVERHEAD DI INCAPSULAMENTO</h3>
+            <div className="flex-1 grid grid-cols-2 gap-6">
+              <div className="bg-black/30 rounded-lg p-5 border border-cyan-500/30 flex flex-col">
+                <h3 className="text-lg lg:text-xl font-bold text-cyan-400 mb-4">OVERHEAD DI INCAPSULAMENTO</h3>
 
-                <div className="space-y-2">
+                <div className="space-y-3 flex-1">
                   {[
                     { layer: 'L7 App', from: 4, to: 324, color: '#ff6b6b' },
                     { layer: 'L6 Pres', from: 324, to: 429, color: '#feca57' },
@@ -1282,9 +1285,9 @@ export default function ISOOSIPresentation() {
                     { layer: 'L3 Net', from: 469, to: 489, color: '#5f27cd' },
                     { layer: 'L2 Data', from: 489, to: 549, color: '#ff9f43' }
                   ].map((item, idx) => (
-                    <div key={idx} className="flex items-center gap-2 text-xs">
-                      <span className="w-16 font-bold" style={{ color: item.color }}>{item.layer}</span>
-                      <div className="flex-1 h-4 bg-gray-800 rounded overflow-hidden">
+                    <div key={idx} className="flex items-center gap-3 text-sm lg:text-base">
+                      <span className="w-20 font-bold" style={{ color: item.color }}>{item.layer}</span>
+                      <div className="flex-1 h-6 bg-gray-800 rounded overflow-hidden">
                         <div
                           className="h-full rounded transition-all duration-1000"
                           style={{
@@ -1294,45 +1297,45 @@ export default function ISOOSIPresentation() {
                           }}
                         />
                       </div>
-                      <span className="w-20 text-right text-gray-400">{item.from}→{item.to}</span>
+                      <span className="w-28 text-right text-gray-400">{item.from}→{item.to}</span>
                     </div>
                   ))}
                 </div>
 
-                <div className="mt-4 p-3 bg-red-500/20 rounded border border-red-500/50 text-center">
-                  <div className="text-red-400 font-bold text-lg">137× overhead</div>
-                  <div className="text-xs text-gray-400">4 byte → 549 byte (13.625%)</div>
+                <div className="mt-6 p-4 bg-red-500/20 rounded border border-red-500/50 text-center">
+                  <div className="text-red-400 font-bold text-2xl lg:text-3xl">137× overhead</div>
+                  <div className="text-base text-gray-400">4 byte → 549 byte (13.625%)</div>
                 </div>
               </div>
 
-              <div className="space-y-4">
-                <div className="bg-black/30 rounded-lg p-4 border border-purple-500/30">
-                  <h3 className="text-sm font-bold text-purple-400 mb-3">TRE LIVELLI DI CRITTOGRAFIA</h3>
+              <div className="space-y-6 flex flex-col">
+                <div className="bg-black/30 rounded-lg p-5 border border-purple-500/30 flex-1">
+                  <h3 className="text-lg lg:text-xl font-bold text-purple-400 mb-4">TRE LIVELLI DI CRITTOGRAFIA</h3>
                   <EncryptionLayers />
                 </div>
 
-                <div className="bg-black/30 rounded-lg p-4 border border-green-500/30">
-                  <h3 className="text-sm font-bold text-green-400 mb-2">TEMPI STIMATI</h3>
-                  <div className="text-xs space-y-1">
+                <div className="bg-black/30 rounded-lg p-5 border border-green-500/30">
+                  <h3 className="text-lg lg:text-xl font-bold text-green-400 mb-4">TEMPI STIMATI</h3>
+                  <div className="text-sm lg:text-base space-y-2">
                     <div className="flex justify-between">
                       <span className="text-gray-400">Elaborazione telefono:</span>
-                      <span className="text-green-300">~1-5 ms</span>
+                      <span className="text-green-300 font-mono">~1-5 ms</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-400">Trasmissione WiFi:</span>
-                      <span className="text-green-300">~52 μs</span>
+                      <span className="text-green-300 font-mono">~52 μs</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-400">Viaggio Internet:</span>
-                      <span className="text-green-300">~20-100 ms</span>
+                      <span className="text-green-300 font-mono">~20-100 ms</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-400">Elaborazione PC:</span>
-                      <span className="text-green-300">~1-5 ms</span>
+                      <span className="text-green-300 font-mono">~1-5 ms</span>
                     </div>
-                    <div className="flex justify-between border-t border-gray-700 pt-1 mt-2">
-                      <span className="text-green-400 font-bold">TOTALE:</span>
-                      <span className="text-green-400 font-bold">~50-200 ms</span>
+                    <div className="flex justify-between border-t border-gray-700 pt-3 mt-3">
+                      <span className="text-green-400 font-bold text-lg">TOTALE:</span>
+                      <span className="text-green-400 font-bold text-lg font-mono">~50-200 ms</span>
                     </div>
                   </div>
                 </div>
@@ -1344,13 +1347,13 @@ export default function ISOOSIPresentation() {
       case 11: // End
         return (
           <div className="flex flex-col items-center justify-center h-full text-center">
-            <div className="text-8xl mb-8">🎓</div>
-            <h1 className="text-4xl font-black mb-4 bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+            <div className="text-9xl mb-8">🎓</div>
+            <h1 className="text-5xl lg:text-6xl font-black mb-6 bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
               Fine della Simulazione
             </h1>
 
-            <div className="max-w-xl text-gray-400 mb-8">
-              <p className="mb-4">
+            <div className="max-w-3xl text-gray-400 mb-10 text-xl lg:text-2xl">
+              <p className="mb-6">
                 Abbiamo seguito il messaggio "ciao" attraverso tutti i 7 livelli ISO/OSI,
                 dalla digitazione sul telefono alla visualizzazione sul PC.
               </p>
@@ -1362,13 +1365,13 @@ export default function ISOOSIPresentation() {
 
             <div className="flex gap-4 flex-wrap justify-center">
               {['Crittografia E2E', 'TCP/IP', 'WebSocket', 'WiFi/Ethernet', 'NAT', 'Routing'].map(topic => (
-                <span key={topic} className="px-3 py-1 bg-cyan-500/20 border border-cyan-500 rounded-full text-cyan-400 text-sm">
+                <span key={topic} className="px-5 py-2 bg-cyan-500/20 border border-cyan-500 rounded-full text-cyan-400 text-lg lg:text-xl">
                   {topic}
                 </span>
               ))}
             </div>
 
-            <div className="mt-12 text-sm text-gray-500">
+            <div className="mt-16 text-lg lg:text-xl text-gray-500">
               <div>ITTS Belluzzi Da Vinci - Rimini</div>
               <div>Corso: Sistemi e Reti</div>
             </div>
@@ -1406,25 +1409,25 @@ export default function ISOOSIPresentation() {
           <button
             onClick={prevSlide}
             disabled={currentSlide === 0}
-            className="px-4 py-2 bg-gray-800 rounded-lg hover:bg-gray-700 disabled:opacity-30 disabled:cursor-not-allowed transition-all flex items-center gap-2"
+            className="px-6 py-3 bg-gray-800 rounded-lg hover:bg-gray-700 disabled:opacity-30 disabled:cursor-not-allowed transition-all flex items-center gap-3 text-lg"
           >
             <span>←</span> Indietro
           </button>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-6">
             <button
               onClick={() => setAutoPlay(!autoPlay)}
-              className={`px-3 py-1 rounded-lg text-sm ${autoPlay ? 'bg-green-500 text-black' : 'bg-gray-800'}`}
+              className={`px-4 py-2 rounded-lg text-base ${autoPlay ? 'bg-green-500 text-black' : 'bg-gray-800'}`}
             >
               {autoPlay ? '⏸ Pausa' : '▶ Auto'}
             </button>
 
-            <div className="flex gap-1">
+            <div className="flex gap-2">
               {Array.from({ length: totalSlides }).map((_, idx) => (
                 <button
                   key={idx}
                   onClick={() => setCurrentSlide(idx)}
-                  className={`w-2 h-2 rounded-full transition-all ${
+                  className={`w-3 h-3 rounded-full transition-all ${
                     idx === currentSlide
                       ? 'bg-cyan-400 scale-125'
                       : idx < currentSlide
@@ -1435,7 +1438,7 @@ export default function ISOOSIPresentation() {
               ))}
             </div>
 
-            <span className="text-sm text-gray-500">
+            <span className="text-base text-gray-500">
               {currentSlide + 1} / {totalSlides}
             </span>
           </div>
@@ -1443,7 +1446,7 @@ export default function ISOOSIPresentation() {
           <button
             onClick={nextSlide}
             disabled={currentSlide === totalSlides - 1}
-            className="px-4 py-2 bg-cyan-600 rounded-lg hover:bg-cyan-500 disabled:opacity-30 disabled:cursor-not-allowed transition-all flex items-center gap-2"
+            className="px-6 py-3 bg-cyan-600 rounded-lg hover:bg-cyan-500 disabled:opacity-30 disabled:cursor-not-allowed transition-all flex items-center gap-3 text-lg"
           >
             Avanti <span>→</span>
           </button>
@@ -1451,7 +1454,7 @@ export default function ISOOSIPresentation() {
       </div>
 
       {/* Keyboard navigation hint */}
-      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 text-xs text-gray-600">
+      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 text-sm text-gray-600">
         Usa ← → per navigare | Spazio per avanzare
       </div>
     </div>
