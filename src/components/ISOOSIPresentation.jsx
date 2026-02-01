@@ -1,5 +1,60 @@
 import React, { useState, useEffect, useRef } from 'react';
 
+// Info Modal Component
+const InfoModal = ({ isOpen, onClose, title, children }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      onClick={onClose}
+    >
+      {/* Backdrop */}
+      <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
+
+      {/* Modal */}
+      <div
+        className="relative bg-gray-900 border border-cyan-500/50 rounded-xl p-6 max-w-2xl max-h-[80vh] overflow-y-auto shadow-2xl shadow-cyan-500/20"
+        onClick={e => e.stopPropagation()}
+      >
+        {/* Close button */}
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-800 transition-colors"
+        >
+          ×
+        </button>
+
+        {/* Title */}
+        <h3 className="text-xl lg:text-2xl font-bold text-cyan-400 mb-4 pr-8">
+          {title}
+        </h3>
+
+        {/* Content */}
+        <div className="text-gray-300 text-base lg:text-lg space-y-4">
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Info Button Component
+const InfoButton = ({ onClick, className = "" }) => {
+  return (
+    <button
+      onClick={(e) => {
+        e.stopPropagation();
+        onClick();
+      }}
+      className={`w-7 h-7 lg:w-8 lg:h-8 flex items-center justify-center rounded-full bg-cyan-500/20 border border-cyan-500/50 text-cyan-400 hover:bg-cyan-500/40 hover:scale-110 transition-all text-sm lg:text-base font-bold ${className}`}
+      title="Maggiori informazioni"
+    >
+      ℹ️
+    </button>
+  );
+};
+
 // Custom hook for typewriter effect
 const useTypewriter = (text, speed = 50, trigger = true) => {
   const [displayText, setDisplayText] = useState('');
@@ -470,8 +525,14 @@ export default function ISOOSIPresentation() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [animationStep, setAnimationStep] = useState(0);
   const [autoPlay, setAutoPlay] = useState(false);
+  const [activeInfo, setActiveInfo] = useState(null);
 
   const totalSlides = 12;
+
+  // Close info modal when changing slides
+  useEffect(() => {
+    setActiveInfo(null);
+  }, [currentSlide]);
 
   // Base font size for projection - larger for digital boards
   const baseFontSize = "text-base md:text-lg lg:text-xl";
@@ -641,7 +702,8 @@ export default function ISOOSIPresentation() {
 
             <div className="flex-1 grid grid-cols-2 gap-6">
               <div className="space-y-4 flex flex-col">
-                <div className="bg-black/30 rounded-lg p-5 border border-red-500/30 flex-1">
+                <div className="bg-black/30 rounded-lg p-5 border border-red-500/30 flex-1 relative">
+                  <InfoButton onClick={() => setActiveInfo('utf8')} className="absolute top-3 right-3" />
                   <h3 className="text-base lg:text-lg font-bold text-red-400 mb-3">MESSAGGIO ORIGINALE</h3>
                   <div className="text-5xl lg:text-6xl font-mono text-center py-6 bg-white/10 rounded">
                     "ciao"
@@ -651,7 +713,8 @@ export default function ISOOSIPresentation() {
                   </div>
                 </div>
 
-                <div className="bg-black/30 rounded-lg p-5 border border-red-500/30 flex-1">
+                <div className="bg-black/30 rounded-lg p-5 border border-red-500/30 flex-1 relative">
+                  <InfoButton onClick={() => setActiveInfo('signal')} className="absolute top-3 right-3" />
                   <h3 className="text-base lg:text-lg font-bold text-red-400 mb-3">CRITTOGRAFIA END-TO-END</h3>
                   <div className="space-y-3 text-base lg:text-lg font-mono">
                     <div className="flex justify-between">
@@ -675,7 +738,8 @@ export default function ISOOSIPresentation() {
               </div>
 
               <div className="space-y-4 flex flex-col">
-                <div className="bg-black/30 rounded-lg p-5 border border-red-500/30 flex-1">
+                <div className="bg-black/30 rounded-lg p-5 border border-red-500/30 flex-1 relative">
+                  <InfoButton onClick={() => setActiveInfo('whatsapp-structure')} className="absolute top-3 right-3" />
                   <h3 className="text-base lg:text-lg font-bold text-red-400 mb-3">STRUTTURA MESSAGGIO WHATSAPP</h3>
                   <div className="space-y-2 text-sm lg:text-base font-mono">
                     <div className="p-3 bg-red-500/20 rounded">
@@ -701,7 +765,8 @@ export default function ISOOSIPresentation() {
                   </div>
                 </div>
 
-                <div className="bg-black/30 rounded-lg p-5 border border-red-500/30">
+                <div className="bg-black/30 rounded-lg p-5 border border-red-500/30 relative">
+                  <InfoButton onClick={() => setActiveInfo('l7-output')} className="absolute top-3 right-3" />
                   <h3 className="text-base lg:text-lg font-bold text-red-400 mb-3">OUTPUT L7</h3>
                   <HexViewer
                     data={['7F', '2A', '8B', '4C', '9D', '1E', '6F', '3A', '5B', '2C', '8D', '4E', 'F1', 'A2', 'B3', 'C4']}
@@ -713,6 +778,78 @@ export default function ISOOSIPresentation() {
                 </div>
               </div>
             </div>
+
+            {/* Info Modals for Slide 2 */}
+            <InfoModal isOpen={activeInfo === 'utf8'} onClose={() => setActiveInfo(null)} title="Codifica UTF-8">
+              <p><strong>UTF-8</strong> (Unicode Transformation Format - 8 bit) è lo standard di codifica dei caratteri più utilizzato nel web. Ogni carattere viene rappresentato da 1 a 4 byte.</p>
+              <div className="bg-black/50 p-4 rounded-lg font-mono text-sm mt-4">
+                <div className="text-cyan-400 mb-2">Conversione "ciao" → esadecimale:</div>
+                <div className="space-y-1">
+                  <div>'c' → ASCII 99 → <span className="text-green-400">0x63</span></div>
+                  <div>'i' → ASCII 105 → <span className="text-green-400">0x69</span></div>
+                  <div>'a' → ASCII 97 → <span className="text-green-400">0x61</span></div>
+                  <div>'o' → ASCII 111 → <span className="text-green-400">0x6F</span></div>
+                </div>
+              </div>
+              <p className="mt-4">I caratteri ASCII (0-127) usano 1 byte. Caratteri accentati (es. "è", "à") usano 2 byte. Emoji e caratteri speciali possono usare fino a 4 byte.</p>
+            </InfoModal>
+
+            <InfoModal isOpen={activeInfo === 'signal'} onClose={() => setActiveInfo(null)} title="Signal Protocol - Crittografia End-to-End">
+              <p>Il <strong>Signal Protocol</strong> è il protocollo crittografico usato da WhatsApp, Signal e altri per garantire che solo mittente e destinatario possano leggere i messaggi.</p>
+              <div className="space-y-4 mt-4">
+                <div className="bg-red-500/20 p-4 rounded-lg">
+                  <h4 className="font-bold text-red-400 mb-2">🔐 AES-256-GCM</h4>
+                  <p className="text-sm"><strong>Advanced Encryption Standard</strong> con chiave a 256 bit in modalità Galois/Counter Mode. Fornisce sia cifratura che autenticazione del messaggio (AEAD).</p>
+                </div>
+                <div className="bg-purple-500/20 p-4 rounded-lg">
+                  <h4 className="font-bold text-purple-400 mb-2">🔑 Curve25519 (ECDH)</h4>
+                  <p className="text-sm"><strong>Elliptic Curve Diffie-Hellman</strong> su curva Curve25519. Permette a due parti di generare una chiave segreta condivisa senza mai trasmetterla.</p>
+                </div>
+                <div className="bg-green-500/20 p-4 rounded-lg">
+                  <h4 className="font-bold text-green-400 mb-2">🔄 Double Ratchet</h4>
+                  <p className="text-sm">Algoritmo che genera una nuova chiave per ogni messaggio. Se una chiave viene compromessa, i messaggi passati e futuri rimangono sicuri (forward secrecy).</p>
+                </div>
+              </div>
+            </InfoModal>
+
+            <InfoModal isOpen={activeInfo === 'whatsapp-structure'} onClose={() => setActiveInfo(null)} title="Struttura del Messaggio WhatsApp">
+              <p>Ogni messaggio WhatsApp contiene metadati oltre al contenuto criptato:</p>
+              <div className="space-y-3 mt-4">
+                <div className="bg-black/50 p-3 rounded-lg">
+                  <span className="text-red-400 font-bold">message_id</span>
+                  <p className="text-sm mt-1">Identificatore univoco del messaggio (32 byte random). Usato per conferme di ricezione e sincronizzazione.</p>
+                </div>
+                <div className="bg-black/50 p-3 rounded-lg">
+                  <span className="text-red-400 font-bold">sender_jid / recipient_jid</span>
+                  <p className="text-sm mt-1"><strong>JID</strong> = Jabber ID. Formato: <code>numero@s.whatsapp.net</code>. Il prefisso 39 è il codice Italia.</p>
+                </div>
+                <div className="bg-black/50 p-3 rounded-lg">
+                  <span className="text-red-400 font-bold">timestamp</span>
+                  <p className="text-sm mt-1">Unix timestamp (secondi dal 1 gennaio 1970). Usato per ordinare i messaggi cronologicamente.</p>
+                </div>
+                <div className="bg-black/50 p-3 rounded-lg">
+                  <span className="text-red-400 font-bold">encrypted_payload</span>
+                  <p className="text-sm mt-1">Il contenuto effettivo del messaggio cifrato con Signal Protocol.</p>
+                </div>
+              </div>
+            </InfoModal>
+
+            <InfoModal isOpen={activeInfo === 'l7-output'} onClose={() => setActiveInfo(null)} title="Output del Livello 7 - Crescita dei Dati">
+              <p>Il messaggio originale di <strong>4 byte</strong> ("ciao") diventa <strong>324 byte</strong> dopo l'elaborazione del livello applicazione.</p>
+              <div className="bg-black/50 p-4 rounded-lg mt-4 font-mono text-sm">
+                <div className="text-cyan-400 mb-2">Composizione dei 324 byte:</div>
+                <div className="space-y-1">
+                  <div>Messaggio originale: <span className="text-green-400">4 byte</span></div>
+                  <div>Padding + IV + Auth Tag: <span className="text-yellow-400">~40 byte</span></div>
+                  <div>Message ID + JIDs + timestamp: <span className="text-purple-400">~100 byte</span></div>
+                  <div>Chiave pubblica + Ratchet info: <span className="text-red-400">~80 byte</span></div>
+                  <div>Altri metadati: <span className="text-gray-400">~100 byte</span></div>
+                </div>
+              </div>
+              <div className="bg-orange-500/20 p-3 rounded-lg mt-4 text-orange-300 text-sm">
+                <strong>Overhead:</strong> 4 byte → 324 byte = 81× di crescita! Questo è il prezzo della sicurezza, ma per messaggi più lunghi la percentuale di overhead diminuisce significativamente.
+              </div>
+            </InfoModal>
           </div>
         );
 
@@ -728,7 +865,8 @@ export default function ISOOSIPresentation() {
             </div>
 
             <div className="flex-1 grid grid-cols-2 gap-6">
-              <div className="bg-black/30 rounded-lg p-5 border border-yellow-500/30 flex flex-col">
+              <div className="bg-black/30 rounded-lg p-5 border border-yellow-500/30 flex flex-col relative">
+                <InfoButton onClick={() => setActiveInfo('protobuf-tls')} className="absolute top-3 right-3" />
                 <h3 className="text-lg lg:text-xl font-bold text-yellow-400 mb-4">L6 - PRESENTAZIONE</h3>
 
                 <div className="space-y-4 flex-1 flex flex-col justify-around">
@@ -767,7 +905,8 @@ export default function ISOOSIPresentation() {
                 </div>
               </div>
 
-              <div className="bg-black/30 rounded-lg p-5 border border-cyan-500/30 flex flex-col">
+              <div className="bg-black/30 rounded-lg p-5 border border-cyan-500/30 flex flex-col relative">
+                <InfoButton onClick={() => setActiveInfo('websocket')} className="absolute top-3 right-3" />
                 <h3 className="text-lg lg:text-xl font-bold text-cyan-400 mb-4">L5 - SESSIONE</h3>
 
                 <div className="space-y-4 flex-1 flex flex-col justify-around">
@@ -808,6 +947,37 @@ export default function ISOOSIPresentation() {
                 </div>
               </div>
             </div>
+
+            {/* Info Modals for Slide 3 */}
+            <InfoModal isOpen={activeInfo === 'protobuf-tls'} onClose={() => setActiveInfo(null)} title="Protocol Buffers + TLS 1.3">
+              <p><strong>Protocol Buffers</strong> è un formato di serializzazione binaria sviluppato da Google. È più compatto e veloce di JSON o XML.</p>
+              <div className="bg-yellow-500/20 p-4 rounded-lg mt-4">
+                <h4 className="font-bold text-yellow-400 mb-2">Struttura TLV (Tag-Length-Value)</h4>
+                <p className="text-sm">Ogni campo è codificato come: Tag (tipo campo) + Length (lunghezza) + Value (dati)</p>
+                <div className="font-mono text-xs mt-2">0A 20 [dati] = Tag 1, Length 32 byte, poi i dati</div>
+              </div>
+              <div className="bg-purple-500/20 p-4 rounded-lg mt-4">
+                <h4 className="font-bold text-purple-400 mb-2">TLS 1.3</h4>
+                <p className="text-sm">Cripta la comunicazione tra client e server. Usa AES-256-GCM per cifratura autenticata. L'Auth Tag di 16 byte garantisce integrità dei dati.</p>
+              </div>
+            </InfoModal>
+
+            <InfoModal isOpen={activeInfo === 'websocket'} onClose={() => setActiveInfo(null)} title="WebSocket - Comunicazione Bidirezionale">
+              <p><strong>WebSocket</strong> è un protocollo che permette comunicazione full-duplex su una singola connessione TCP.</p>
+              <div className="bg-cyan-500/20 p-4 rounded-lg mt-4">
+                <h4 className="font-bold text-cyan-400 mb-2">Frame WebSocket</h4>
+                <div className="text-sm space-y-1">
+                  <div><strong>FIN:</strong> 1 = ultimo frame del messaggio</div>
+                  <div><strong>Opcode:</strong> 0x2 = dati binari</div>
+                  <div><strong>MASK:</strong> 1 = client→server (obbligatorio)</div>
+                  <div><strong>Masking:</strong> XOR con chiave random per sicurezza</div>
+                </div>
+              </div>
+              <div className="bg-green-500/20 p-4 rounded-lg mt-4">
+                <h4 className="font-bold text-green-400 mb-2">Vantaggi vs HTTP polling</h4>
+                <p className="text-sm">Connessione persistente, bassa latenza, bidirezionale. Header minimi (2-14 byte vs ~800 byte HTTP).</p>
+              </div>
+            </InfoModal>
           </div>
         );
 
@@ -823,7 +993,8 @@ export default function ISOOSIPresentation() {
             </div>
 
             <div className="flex-1 grid grid-cols-2 gap-6">
-              <div className="bg-black/30 rounded-lg p-5 border border-green-500/30 flex flex-col">
+              <div className="bg-black/30 rounded-lg p-5 border border-green-500/30 flex flex-col relative">
+                <InfoButton onClick={() => setActiveInfo('tcp')} className="absolute top-3 right-3" />
                 <h3 className="text-lg lg:text-xl font-bold text-green-400 mb-4">L4 - TCP SEGMENT</h3>
 
                 <div className="bg-green-500/10 p-4 rounded mb-4 flex-1">
@@ -865,7 +1036,8 @@ export default function ISOOSIPresentation() {
                 </div>
               </div>
 
-              <div className="bg-black/30 rounded-lg p-5 border border-purple-500/30 flex flex-col">
+              <div className="bg-black/30 rounded-lg p-5 border border-purple-500/30 flex flex-col relative">
+                <InfoButton onClick={() => setActiveInfo('ip-nat')} className="absolute top-3 right-3" />
                 <h3 className="text-lg lg:text-xl font-bold text-purple-400 mb-4">L3 - IP PACKET + NAT</h3>
 
                 <div className="bg-purple-500/10 p-4 rounded mb-4 flex-1">
@@ -903,6 +1075,34 @@ export default function ISOOSIPresentation() {
                 </div>
               </div>
             </div>
+            {/* Info Modals for Slide 4 */}
+            <InfoModal isOpen={activeInfo === 'tcp'} onClose={() => setActiveInfo(null)} title="TCP - Transmission Control Protocol">
+              <p><strong>TCP</strong> è il protocollo di trasporto affidabile di Internet. Garantisce che i dati arrivino completi, in ordine e senza errori.</p>
+              <div className="bg-green-500/20 p-4 rounded-lg mt-4">
+                <h4 className="font-bold text-green-400 mb-2">Header TCP</h4>
+                <div className="text-sm space-y-1">
+                  <div><strong>Porte:</strong> 52431 (effimera) → 443 (HTTPS)</div>
+                  <div><strong>Sequence:</strong> Posizione del primo byte nel flusso</div>
+                  <div><strong>ACK:</strong> Conferma ricezione</div>
+                  <div><strong>PSH:</strong> Consegna immediata all'applicazione</div>
+                </div>
+              </div>
+            </InfoModal>
+
+            <InfoModal isOpen={activeInfo === 'ip-nat'} onClose={() => setActiveInfo(null)} title="IPv4 + NAT">
+              <p><strong>IPv4</strong> gestisce l'indirizzamento logico e il routing. <strong>NAT</strong> traduce IP privati in pubblici.</p>
+              <div className="bg-purple-500/20 p-4 rounded-lg mt-4">
+                <h4 className="font-bold text-purple-400 mb-2">Header IP</h4>
+                <div className="text-sm space-y-1">
+                  <div><strong>TTL:</strong> 64 = massimo hop prima dello scarto</div>
+                  <div><strong>Protocol:</strong> 6 = TCP</div>
+                </div>
+              </div>
+              <div className="bg-orange-500/20 p-4 rounded-lg mt-4">
+                <h4 className="font-bold text-orange-400 mb-2">NAT (Network Address Translation)</h4>
+                <p className="text-sm">Il router traduce 192.168.1.100:52431 → 82.53.147.201:34567. Permette a molti dispositivi di condividere un IP pubblico.</p>
+              </div>
+            </InfoModal>
           </div>
         );
 
@@ -918,7 +1118,8 @@ export default function ISOOSIPresentation() {
             </div>
 
             <div className="flex-1 grid grid-cols-2 gap-6">
-              <div className="bg-black/30 rounded-lg p-5 border border-orange-500/30 flex flex-col">
+              <div className="bg-black/30 rounded-lg p-5 border border-orange-500/30 flex flex-col relative">
+                <InfoButton onClick={() => setActiveInfo('wifi')} className="absolute top-3 right-3" />
                 <h3 className="text-lg lg:text-xl font-bold text-orange-400 mb-4">L2 - WIFI FRAME (802.11)</h3>
 
                 <div className="space-y-4 text-sm lg:text-base flex-1">
@@ -955,7 +1156,8 @@ export default function ISOOSIPresentation() {
                 </div>
               </div>
 
-              <div className="bg-black/30 rounded-lg p-5 border border-cyan-500/30 flex flex-col">
+              <div className="bg-black/30 rounded-lg p-5 border border-cyan-500/30 flex flex-col relative">
+                <InfoButton onClick={() => setActiveInfo('ofdm')} className="absolute top-3 right-3" />
                 <h3 className="text-lg lg:text-xl font-bold text-cyan-400 mb-4">L1 - TRASMISSIONE RADIO</h3>
 
                 <div className="space-y-4 text-sm lg:text-base flex-1">
@@ -991,6 +1193,30 @@ export default function ISOOSIPresentation() {
                 </div>
               </div>
             </div>
+            {/* Info Modals for Slide 5 */}
+            <InfoModal isOpen={activeInfo === 'wifi'} onClose={() => setActiveInfo(null)} title="WiFi 802.11 + WPA2">
+              <p>Il frame <strong>IEEE 802.11</strong> trasporta dati sul collegamento wireless verso l'Access Point.</p>
+              <div className="bg-orange-500/20 p-4 rounded-lg mt-4">
+                <h4 className="font-bold text-orange-400 mb-2">Indirizzi MAC</h4>
+                <p className="text-sm">WiFi usa fino a 4 indirizzi MAC: Receiver (AP), Transmitter (telefono), Destination (router), Source.</p>
+              </div>
+              <div className="bg-red-500/20 p-4 rounded-lg mt-4">
+                <h4 className="font-bold text-red-400 mb-2">WPA2-CCMP</h4>
+                <p className="text-sm">Crittografia AES-128-CCM con autenticazione. Protegge i dati sul collegamento radio. Terzo livello di crittografia del nostro messaggio!</p>
+              </div>
+            </InfoModal>
+
+            <InfoModal isOpen={activeInfo === 'ofdm'} onClose={() => setActiveInfo(null)} title="OFDM + 256-QAM">
+              <p><strong>OFDM</strong> (Orthogonal Frequency Division Multiplexing) divide la banda in 256 sottoportanti.</p>
+              <div className="bg-cyan-500/20 p-4 rounded-lg mt-4">
+                <h4 className="font-bold text-cyan-400 mb-2">256-QAM</h4>
+                <p className="text-sm">Ogni sottoportante trasporta 8 bit per simbolo (256 = 2⁸ punti nel diagramma di costellazione).</p>
+              </div>
+              <div className="bg-green-500/20 p-4 rounded-lg mt-4">
+                <h4 className="font-bold text-green-400 mb-2">Tempo trasmissione: ~52 μs</h4>
+                <p className="text-sm">549 byte = 4392 bit viaggiano in meno di un decimo di millisecondo a 5 GHz!</p>
+              </div>
+            </InfoModal>
           </div>
         );
 
@@ -1005,6 +1231,7 @@ export default function ISOOSIPresentation() {
                 </h2>
                 <p className="text-lg lg:text-xl text-gray-400">Il pacchetto attraversa multiple reti</p>
               </div>
+              <InfoButton onClick={() => setActiveInfo('internet-journey')} className="ml-auto" />
             </div>
 
             <NetworkDiagram activeHop={Math.min(animationStep, 7)} />
@@ -1039,6 +1266,23 @@ export default function ISOOSIPresentation() {
                 Il server può solo leggere i metadata e inoltrare il messaggio.
               </div>
             </div>
+            {/* Info Modal for Slide 6 */}
+            <InfoModal isOpen={activeInfo === 'internet-journey'} onClose={() => setActiveInfo(null)} title="Il Viaggio su Internet">
+              <p>Un pacchetto attraversa tipicamente <strong>10-20 router</strong> (hop) prima di raggiungere la destinazione.</p>
+              <div className="bg-cyan-500/20 p-4 rounded-lg mt-4">
+                <h4 className="font-bold text-cyan-400 mb-2">Ogni hop:</h4>
+                <ol className="list-decimal ml-4 text-sm space-y-1">
+                  <li>Router riceve pacchetto, legge IP destinazione</li>
+                  <li>Consulta routing table per next hop</li>
+                  <li>Decrementa TTL</li>
+                  <li>Inoltra al prossimo router</li>
+                </ol>
+              </div>
+              <div className="bg-purple-500/20 p-4 rounded-lg mt-4">
+                <h4 className="font-bold text-purple-400 mb-2">Crittografia E2E sul server</h4>
+                <p className="text-sm">Il server WhatsApp vede solo i metadati (chi parla con chi) ma NON può leggere "ciao" grazie al Signal Protocol!</p>
+              </div>
+            </InfoModal>
           </div>
         );
 
