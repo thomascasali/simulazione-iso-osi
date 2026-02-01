@@ -488,10 +488,10 @@ const EncryptionLayers = () => {
   }, []);
 
   const layers = [
-    { name: 'Messaggio', color: '#fff', content: '"ciao"' },
-    { name: 'Signal E2E', color: '#ff6b6b', content: 'AES-256-GCM' },
-    { name: 'TLS 1.3', color: '#feca57', content: 'AES-256-GCM' },
-    { name: 'WPA2', color: '#ff9f43', content: 'AES-128-CCM' }
+    { name: 'Messaggio', color: '#fff', bgColor: '#ffffff', textColor: '#000000', content: '"ciao"' },
+    { name: 'Signal E2E', color: '#ff6b6b', bgColor: '#ff6b6b', textColor: '#ffffff', content: 'AES-256-GCM' },
+    { name: 'TLS 1.3', color: '#feca57', bgColor: '#feca57', textColor: '#000000', content: 'AES-256-GCM' },
+    { name: 'WPA2', color: '#ff9f43', bgColor: '#ff9f43', textColor: '#000000', content: 'AES-128-CCM' }
   ];
 
   return (
@@ -502,8 +502,8 @@ const EncryptionLayers = () => {
           className="transition-all duration-500 flex items-center justify-center"
           style={{
             width: `${280 - idx * 50}px`,
-            padding: '8px 16px',
-            backgroundColor: `${layer.color}${idx === 0 ? 'ff' : '30'}`,
+            padding: '10px 16px',
+            backgroundColor: idx === 0 ? layer.bgColor : `${layer.bgColor}90`,
             border: `2px solid ${layer.color}`,
             borderRadius: '8px',
             transform: activeLayer >= idx ? 'scale(1)' : 'scale(0.9)',
@@ -511,7 +511,13 @@ const EncryptionLayers = () => {
             boxShadow: activeLayer === idx ? `0 0 20px ${layer.color}` : 'none'
           }}
         >
-          <span className="text-xs font-bold" style={{ color: idx === 0 ? '#000' : layer.color }}>
+          <span
+            className="text-sm lg:text-base font-bold"
+            style={{
+              color: layer.textColor,
+              textShadow: idx > 0 ? '0 1px 2px rgba(0,0,0,0.5)' : 'none'
+            }}
+          >
             {layer.name}: {layer.content}
           </span>
         </div>
@@ -1371,11 +1377,45 @@ export default function ISOOSIPresentation() {
           <div className="h-full flex flex-col">
             <div className="flex items-center gap-4 mb-6">
               <span className="text-5xl lg:text-6xl">🔍</span>
-              <div>
+              <div className="flex-1">
                 <h2 className="text-3xl lg:text-4xl font-bold text-purple-400">L3 + L4 - Verifica e Consegna</h2>
                 <p className="text-lg lg:text-xl text-gray-400">IP Verification + TCP ACK</p>
               </div>
+              <InfoButton onClick={() => setActiveInfo('l3l4-up')} />
             </div>
+
+            <InfoModal isOpen={activeInfo === 'l3l4-up'} onClose={() => setActiveInfo(null)} title="L3 + L4 - Verifica e Consegna">
+              <div className="space-y-6">
+                <div>
+                  <h4 className="text-xl lg:text-2xl font-bold text-purple-400 mb-3">🔍 Livello 3 - Verifica IP</h4>
+                  <p className="mb-3">Quando il pacchetto arriva al PC destinatario, il livello Network verifica:</p>
+                  <ul className="list-disc list-inside space-y-2 text-base lg:text-xl">
+                    <li><strong>Header Checksum:</strong> Ricalcola il checksum dell'header IP per verificare che non ci siano stati errori durante il trasporto</li>
+                    <li><strong>Indirizzo IP destinazione:</strong> Conferma che il pacchetto sia effettivamente per questo host (192.168.2.50)</li>
+                    <li><strong>TTL (Time To Live):</strong> Il valore 55 indica che il pacchetto ha attraversato circa 9 router (partendo da 64)</li>
+                    <li><strong>Protocol field:</strong> Il valore 6 indica che il payload deve essere passato al protocollo TCP</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h4 className="text-xl lg:text-2xl font-bold text-green-400 mb-3">📤 Livello 4 - TCP Processing & ACK</h4>
+                  <p className="mb-3">Il livello Transport elabora il segmento TCP:</p>
+                  <ul className="list-disc list-inside space-y-2 text-base lg:text-xl">
+                    <li><strong>Checksum TCP:</strong> Verifica l'integrità includendo anche pseudo-header con IP sorgente/destinazione</li>
+                    <li><strong>Sequence Number:</strong> Controlla che il numero di sequenza sia quello atteso per garantire l'ordine</li>
+                    <li><strong>Port matching:</strong> La porta 58234 identifica la socket del browser che attende i dati</li>
+                    <li><strong>PSH flag:</strong> Indica "push immediato" - i dati devono essere consegnati subito all'applicazione senza attendere ulteriori segmenti</li>
+                    <li><strong>ACK di risposta:</strong> Il PC invia un ACK (8756432537) per confermare la ricezione del segmento</li>
+                  </ul>
+                </div>
+
+                <div className="bg-purple-500/20 p-4 rounded-lg border border-purple-500/50">
+                  <p className="text-purple-300 text-base lg:text-xl">
+                    <strong>💡 Nota:</strong> Il meccanismo ACK è fondamentale per l'affidabilità di TCP. Se il mittente non riceve l'ACK entro un timeout, ritrasmette automaticamente il segmento.
+                  </p>
+                </div>
+              </div>
+            </InfoModal>
 
             <div className="flex-1 grid grid-cols-2 gap-6">
               <div className="bg-black/30 rounded-lg p-5 border border-purple-500/30 flex flex-col">
@@ -1448,11 +1488,55 @@ export default function ISOOSIPresentation() {
           <div className="h-full flex flex-col">
             <div className="flex items-center gap-4 mb-6">
               <span className="text-5xl lg:text-6xl">🔓</span>
-              <div>
+              <div className="flex-1">
                 <h2 className="text-3xl lg:text-4xl font-bold text-yellow-400">L5-L6-L7 - Decifratura e Visualizzazione</h2>
                 <p className="text-lg lg:text-xl text-gray-400">WebSocket → TLS → Signal → "ciao"</p>
               </div>
+              <InfoButton onClick={() => setActiveInfo('l567-up')} />
             </div>
+
+            <InfoModal isOpen={activeInfo === 'l567-up'} onClose={() => setActiveInfo(null)} title="L5-L6-L7 - Decifratura e Visualizzazione">
+              <div className="space-y-6">
+                <div>
+                  <h4 className="text-xl lg:text-2xl font-bold text-cyan-400 mb-3">🔌 Livello 5 - WebSocket Frame Processing</h4>
+                  <p className="mb-3">Il browser elabora il frame WebSocket ricevuto:</p>
+                  <ul className="list-disc list-inside space-y-2 text-base lg:text-xl">
+                    <li><strong>FIN bit = 1:</strong> Indica che questo è l'ultimo (o unico) frame del messaggio</li>
+                    <li><strong>Opcode binary:</strong> Il payload contiene dati binari (non testo)</li>
+                    <li><strong>MASK = 0:</strong> I frame dal server al client non sono mascherati (solo client→server richiede masking)</li>
+                    <li><strong>Rimozione header:</strong> 8 byte di overhead WebSocket rimossi (437→429 byte)</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h4 className="text-xl lg:text-2xl font-bold text-yellow-400 mb-3">🔐 Livello 6 - TLS 1.3 Decryption</h4>
+                  <p className="mb-3">Decifratura del canale sicuro TLS:</p>
+                  <ul className="list-disc list-inside space-y-2 text-base lg:text-xl">
+                    <li><strong>Verifica Auth Tag:</strong> I 16 byte finali sono il tag di autenticazione GCM che garantisce integrità</li>
+                    <li><strong>AES-256-GCM:</strong> Algoritmo di cifratura simmetrica con chiave derivata dall'handshake TLS</li>
+                    <li><strong>Deserializzazione Protobuf:</strong> Il payload decifrato è in formato Protocol Buffers, il formato binario usato da WhatsApp</li>
+                    <li><strong>Rimozione overhead:</strong> Record header + Auth tag rimossi (429→324 byte)</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h4 className="text-xl lg:text-2xl font-bold text-red-400 mb-3">🔒 Livello 7 - Signal Protocol E2E Decryption</h4>
+                  <p className="mb-3">Decifratura end-to-end del messaggio:</p>
+                  <ul className="list-disc list-inside space-y-2 text-base lg:text-xl">
+                    <li><strong>ECDH Key Exchange:</strong> Le chiavi pubbliche scambiate permettono di derivare un segreto condiviso</li>
+                    <li><strong>Double Ratchet:</strong> Algoritmo che genera una nuova chiave per ogni messaggio, garantendo forward secrecy</li>
+                    <li><strong>AES-256-GCM finale:</strong> Il messaggio viene decifrato con la chiave derivata dal ratchet</li>
+                    <li><strong>Risultato:</strong> I 4 byte originali "ciao" sono finalmente leggibili!</li>
+                  </ul>
+                </div>
+
+                <div className="bg-green-500/20 p-4 rounded-lg border border-green-500/50">
+                  <p className="text-green-300 text-base lg:text-xl">
+                    <strong>💡 Sicurezza:</strong> Neanche WhatsApp può leggere i messaggi! La crittografia E2E garantisce che solo mittente e destinatario possano decifrare il contenuto.
+                  </p>
+                </div>
+              </div>
+            </InfoModal>
 
             <div className="flex-1 grid grid-cols-3 gap-4">
               <div className="bg-black/30 rounded-lg p-5 border border-cyan-500/30 flex flex-col">
@@ -1512,9 +1596,57 @@ export default function ISOOSIPresentation() {
       case 10: // Summary
         return (
           <div className="h-full flex flex-col">
-            <h2 className="text-3xl lg:text-4xl font-bold text-center bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent mb-6">
-              📊 Riepilogo del Viaggio
-            </h2>
+            <div className="flex items-center justify-center gap-4 mb-6">
+              <h2 className="text-3xl lg:text-4xl font-bold text-center bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+                📊 Riepilogo del Viaggio
+              </h2>
+              <InfoButton onClick={() => setActiveInfo('summary')} />
+            </div>
+
+            <InfoModal isOpen={activeInfo === 'summary'} onClose={() => setActiveInfo(null)} title="Riepilogo del Viaggio">
+              <div className="space-y-6">
+                <div>
+                  <h4 className="text-xl lg:text-2xl font-bold text-cyan-400 mb-3">📦 Overhead di Incapsulamento</h4>
+                  <p className="mb-3">Ogni livello ISO/OSI aggiunge informazioni di controllo (header) al messaggio originale:</p>
+                  <ul className="list-disc list-inside space-y-2 text-base lg:text-xl">
+                    <li><strong>L7 Application (4→324):</strong> +320 byte per Signal Protocol (chiavi, metadata, padding, auth tag)</li>
+                    <li><strong>L6 Presentation (324→429):</strong> +105 byte per TLS record (header, nonce, auth tag, padding)</li>
+                    <li><strong>L5 Session (429→437):</strong> +8 byte per WebSocket frame header</li>
+                    <li><strong>L4 Transport (437→469):</strong> +32 byte per header TCP (porte, seq, ack, flags, checksum)</li>
+                    <li><strong>L3 Network (469→489):</strong> +20 byte per header IP (indirizzi, TTL, checksum)</li>
+                    <li><strong>L2 Data Link (489→549):</strong> +60 byte per frame WiFi (indirizzi MAC, WPA2, FCS)</li>
+                  </ul>
+                  <p className="mt-3 text-yellow-400">Il rapporto 137:1 (4 byte → 549 byte) sembra enorme, ma per messaggi più lunghi l'overhead percentuale diminuisce drasticamente.</p>
+                </div>
+
+                <div>
+                  <h4 className="text-xl lg:text-2xl font-bold text-purple-400 mb-3">🔐 I Tre Livelli di Crittografia</h4>
+                  <p className="mb-3">Il messaggio è protetto da tre strati di cifratura indipendenti:</p>
+                  <ul className="list-disc list-inside space-y-2 text-base lg:text-xl">
+                    <li><strong>Signal E2E (interno):</strong> Solo mittente e destinatario possono leggere - neanche WhatsApp ha accesso</li>
+                    <li><strong>TLS 1.3 (intermedio):</strong> Protegge la comunicazione tra il dispositivo e i server WhatsApp</li>
+                    <li><strong>WPA2 (esterno):</strong> Protegge la trasmissione wireless tra dispositivo e access point WiFi</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h4 className="text-xl lg:text-2xl font-bold text-green-400 mb-3">⏱️ Tempi di Trasmissione</h4>
+                  <p className="mb-3">Il viaggio completo richiede 50-200 ms, distribuiti così:</p>
+                  <ul className="list-disc list-inside space-y-2 text-base lg:text-xl">
+                    <li><strong>Elaborazione telefono (1-5 ms):</strong> Cifratura, incapsulamento, preparazione frame</li>
+                    <li><strong>Trasmissione WiFi (~52 μs):</strong> Tempo fisico di trasmissione del frame a 100 Mbps</li>
+                    <li><strong>Viaggio Internet (20-100 ms):</strong> Latenza di rete, attraversamento router, server WhatsApp</li>
+                    <li><strong>Elaborazione PC (1-5 ms):</strong> Decifratura, de-incapsulamento, rendering nel browser</li>
+                  </ul>
+                </div>
+
+                <div className="bg-cyan-500/20 p-4 rounded-lg border border-cyan-500/50">
+                  <p className="text-cyan-300 text-base lg:text-xl">
+                    <strong>💡 Curiosità:</strong> La maggior parte del tempo (~80%) è spesa nel "viaggio Internet", determinato principalmente dalla distanza fisica e dal numero di hop tra i router.
+                  </p>
+                </div>
+              </div>
+            </InfoModal>
 
             <div className="flex-1 grid grid-cols-2 gap-6">
               <div className="bg-black/30 rounded-lg p-5 border border-cyan-500/30 flex flex-col">
