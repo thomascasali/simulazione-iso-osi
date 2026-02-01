@@ -39,7 +39,7 @@ const InfoModal = ({ isOpen, onClose, title, children }) => {
   );
 };
 
-// Info Button Component - Larger for visibility
+// Info Button Component - Simple emoji button
 const InfoButton = ({ onClick, className = "" }) => {
   return (
     <button
@@ -47,7 +47,7 @@ const InfoButton = ({ onClick, className = "" }) => {
         e.stopPropagation();
         onClick();
       }}
-      className={`w-10 h-10 lg:w-12 lg:h-12 flex items-center justify-center rounded-full bg-cyan-500/30 border-2 border-cyan-500/70 text-cyan-400 hover:bg-cyan-500/50 hover:scale-110 transition-all text-xl lg:text-2xl font-bold shadow-lg shadow-cyan-500/20 ${className}`}
+      className={`text-2xl lg:text-3xl hover:scale-125 transition-all cursor-pointer ${className}`}
       title="Maggiori informazioni"
     >
       ℹ️
@@ -1644,7 +1644,7 @@ export default function ISOOSIPresentation() {
         </div>
 
         {/* Slide content */}
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1 overflow-y-auto overflow-x-hidden">
           {renderSlide()}
         </div>
 
