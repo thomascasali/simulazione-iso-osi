@@ -533,7 +533,7 @@ export default function ISOOSIPresentation() {
   const [autoPlay, setAutoPlay] = useState(false);
   const [activeInfo, setActiveInfo] = useState(null);
 
-  const totalSlides = 16;
+  const totalSlides = 17;
 
   // Close info modal when changing slides
   useEffect(() => {
@@ -966,6 +966,12 @@ export default function ISOOSIPresentation() {
                 <h4 className="font-bold text-purple-400 mb-2">TLS 1.3</h4>
                 <p className="text-base lg:text-lg">Cripta la comunicazione tra client e server. Usa AES-256-GCM per cifratura autenticata. L'Auth Tag di 16 byte garantisce integrità dei dati.</p>
               </div>
+              <div className="bg-gray-500/20 p-4 rounded-lg mt-4">
+                <h4 className="font-bold text-gray-300 mb-2">📦 E la Compressione?</h4>
+                <p className="text-base lg:text-lg mb-2">Il Livello 6 può teoricamente gestire la compressione dati, ma <strong>TLS 1.3 non la supporta</strong> per motivi di sicurezza.</p>
+                <p className="text-base lg:text-lg mb-2">Le vecchie versioni TLS (1.0-1.2) permettevano la compressione, ma questa è stata rimossa perché vulnerabile ad attacchi <strong>CRIME</strong> e <strong>BREACH</strong> (la dimensione dei dati compressi rivelava informazioni sul contenuto).</p>
+                <p className="text-base lg:text-lg">Per messaggi piccoli come "ciao" (4 byte) la compressione sarebbe comunque inutile. Per file multimediali (immagini, video), WhatsApp applica la compressione a <strong>Livello 7 (Applicazione)</strong>, prima della cifratura E2E.</p>
+              </div>
             </InfoModal>
 
             <InfoModal isOpen={activeInfo === 'websocket'} onClose={() => setActiveInfo(null)} title="WebSocket - Comunicazione Bidirezionale">
@@ -1226,7 +1232,158 @@ export default function ISOOSIPresentation() {
           </div>
         );
 
-      case 6: // Internet Journey
+      case 6: // Local Network Infrastructure
+        return (
+          <div className="h-full flex flex-col">
+            <div className="flex items-center gap-4 mb-6">
+              <span className="text-5xl lg:text-6xl">🏠</span>
+              <div className="flex-1">
+                <h2 className="text-3xl lg:text-4xl font-bold text-teal-400">Infrastruttura di Rete Locale</h2>
+                <p className="text-lg lg:text-xl text-gray-400">Dal telefono al router di casa</p>
+              </div>
+              <InfoButton onClick={() => setActiveInfo('local-network')} />
+            </div>
+
+            <InfoModal isOpen={activeInfo === 'local-network'} onClose={() => setActiveInfo(null)} title="Infrastruttura di Rete Locale">
+              <div className="space-y-6">
+                <div>
+                  <h4 className="text-xl lg:text-2xl font-bold text-cyan-400 mb-3">📡 Access Point (AP)</h4>
+                  <p className="mb-3">L'Access Point è un <strong>bridge</strong> tra la rete wireless e quella cablata:</p>
+                  <ul className="list-disc list-inside space-y-2 text-base lg:text-xl">
+                    <li><strong>Livello 2:</strong> Opera a livello Data Link, non legge gli indirizzi IP</li>
+                    <li><strong>Conversione:</strong> Trasforma i frame WiFi 802.11 in frame Ethernet 802.3</li>
+                    <li><strong>BSSID:</strong> Il MAC dell'AP identifica la rete wireless</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h4 className="text-xl lg:text-2xl font-bold text-green-400 mb-3">🔀 Switch</h4>
+                  <p className="mb-3">Lo Switch smista i frame in base agli indirizzi MAC:</p>
+                  <ul className="list-disc list-inside space-y-2 text-base lg:text-xl">
+                    <li><strong>MAC Address Table:</strong> Impara quali dispositivi sono su quali porte</li>
+                    <li><strong>Forwarding:</strong> Inoltra i frame solo alla porta corretta (non broadcast)</li>
+                    <li><strong>Full-duplex:</strong> Permette trasmissione e ricezione simultanee</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h4 className="text-xl lg:text-2xl font-bold text-purple-400 mb-3">🌐 Router</h4>
+                  <p className="mb-3">Il Router opera a <strong>Livello 3</strong> e connette reti diverse:</p>
+                  <ul className="list-disc list-inside space-y-2 text-base lg:text-xl">
+                    <li><strong>Routing:</strong> Legge l'indirizzo IP e decide dove inoltrare</li>
+                    <li><strong>NAT:</strong> Traduce l'IP privato (192.168.x.x) in IP pubblico</li>
+                    <li><strong>Gateway:</strong> È il "cancello" verso Internet</li>
+                  </ul>
+                </div>
+
+                <div className="bg-teal-500/20 p-4 rounded-lg border border-teal-500/50">
+                  <p className="text-teal-300 text-base lg:text-xl">
+                    <strong>💡 Nota:</strong> Nei router domestici moderni, AP + Switch + Router sono spesso integrati in un unico dispositivo!
+                  </p>
+                </div>
+              </div>
+            </InfoModal>
+
+            {/* Network topology diagram */}
+            <div className="flex-1 flex flex-col justify-center">
+              <div className="bg-black/30 rounded-lg p-6 border border-teal-500/30">
+                {/* Main flow */}
+                <div className="flex items-center justify-between gap-2 mb-8">
+                  {/* Phone */}
+                  <div className="flex flex-col items-center">
+                    <div className="text-5xl lg:text-6xl mb-2">📱</div>
+                    <div className="text-sm lg:text-base text-gray-400">Telefono</div>
+                    <div className="text-xs text-cyan-400 font-mono">WiFi</div>
+                  </div>
+
+                  {/* Arrow */}
+                  <div className="flex-1 flex items-center">
+                    <div className="flex-1 h-1 bg-gradient-to-r from-cyan-500 to-cyan-400 rounded animate-pulse"></div>
+                    <div className="text-cyan-400 text-2xl">〉</div>
+                  </div>
+
+                  {/* Access Point */}
+                  <div className="flex flex-col items-center bg-cyan-500/20 p-3 rounded-lg border border-cyan-500/50">
+                    <div className="text-4xl lg:text-5xl mb-2">📡</div>
+                    <div className="text-sm lg:text-base font-bold text-cyan-400">Access Point</div>
+                    <div className="text-xs text-gray-400">Bridge L2</div>
+                    <div className="text-xs text-gray-500 font-mono mt-1">AA:BB:CC:DD:EE:FF</div>
+                  </div>
+
+                  {/* Arrow */}
+                  <div className="flex-1 flex items-center">
+                    <div className="flex-1 h-1 bg-gradient-to-r from-green-500 to-green-400 rounded animate-pulse"></div>
+                    <div className="text-green-400 text-2xl">〉</div>
+                  </div>
+
+                  {/* Switch */}
+                  <div className="flex flex-col items-center bg-green-500/20 p-3 rounded-lg border border-green-500/50">
+                    <div className="text-4xl lg:text-5xl mb-2">🔀</div>
+                    <div className="text-sm lg:text-base font-bold text-green-400">Switch</div>
+                    <div className="text-xs text-gray-400">Smistamento L2</div>
+                    <div className="text-xs text-gray-500 font-mono mt-1">MAC Table</div>
+                  </div>
+
+                  {/* Arrow */}
+                  <div className="flex-1 flex items-center">
+                    <div className="flex-1 h-1 bg-gradient-to-r from-purple-500 to-purple-400 rounded animate-pulse"></div>
+                    <div className="text-purple-400 text-2xl">〉</div>
+                  </div>
+
+                  {/* Router */}
+                  <div className="flex flex-col items-center bg-purple-500/20 p-3 rounded-lg border border-purple-500/50">
+                    <div className="text-4xl lg:text-5xl mb-2">🌐</div>
+                    <div className="text-sm lg:text-base font-bold text-purple-400">Router</div>
+                    <div className="text-xs text-gray-400">Routing L3 + NAT</div>
+                    <div className="text-xs text-gray-500 font-mono mt-1">192.168.1.1</div>
+                  </div>
+
+                  {/* Arrow to Internet */}
+                  <div className="flex-1 flex items-center">
+                    <div className="flex-1 h-1 bg-gradient-to-r from-orange-500 to-red-400 rounded animate-pulse"></div>
+                    <div className="text-orange-400 text-2xl">〉</div>
+                  </div>
+
+                  {/* Internet */}
+                  <div className="flex flex-col items-center">
+                    <div className="text-5xl lg:text-6xl mb-2">☁️</div>
+                    <div className="text-sm lg:text-base text-gray-400">Internet</div>
+                    <div className="text-xs text-orange-400 font-mono">ISP</div>
+                  </div>
+                </div>
+
+                {/* Layer indicators */}
+                <div className="grid grid-cols-4 gap-4 mt-4">
+                  <div className="text-center p-3 bg-cyan-500/10 rounded border border-cyan-500/30">
+                    <div className="text-cyan-400 font-bold text-sm lg:text-base">WiFi → Ethernet</div>
+                    <div className="text-gray-400 text-xs">802.11 → 802.3</div>
+                  </div>
+                  <div className="text-center p-3 bg-green-500/10 rounded border border-green-500/30">
+                    <div className="text-green-400 font-bold text-sm lg:text-base">MAC Forwarding</div>
+                    <div className="text-gray-400 text-xs">Porta corretta</div>
+                  </div>
+                  <div className="text-center p-3 bg-purple-500/10 rounded border border-purple-500/30">
+                    <div className="text-purple-400 font-bold text-sm lg:text-base">NAT + Routing</div>
+                    <div className="text-gray-400 text-xs">IP privato → pubblico</div>
+                  </div>
+                  <div className="text-center p-3 bg-orange-500/10 rounded border border-orange-500/30">
+                    <div className="text-orange-400 font-bold text-sm lg:text-base">Verso ISP</div>
+                    <div className="text-gray-400 text-xs">Fibra/ADSL</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Note about integrated devices */}
+              <div className="mt-4 p-3 bg-teal-500/20 rounded-lg border border-teal-500/50 text-center">
+                <span className="text-teal-300 text-sm lg:text-base">
+                  💡 Nei router domestici, AP + Switch + Router sono spesso un <strong>unico dispositivo</strong>
+                </span>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 7: // Internet Journey
         return (
           <div className="h-full flex flex-col">
             <div className="flex items-center gap-4 mb-4">
@@ -1292,7 +1449,7 @@ export default function ISOOSIPresentation() {
           </div>
         );
 
-      case 7: // L1-L2 Up (Ethernet)
+      case 8: // L1-L2 Up (Ethernet)
         return (
           <div className="h-full flex flex-col">
             <div className="flex items-center gap-4 mb-6">
@@ -1372,7 +1529,7 @@ export default function ISOOSIPresentation() {
           </div>
         );
 
-      case 8: // L3-L4 Up
+      case 9: // L3-L4 Up
         return (
           <div className="h-full flex flex-col">
             <div className="flex items-center gap-4 mb-6">
@@ -1483,7 +1640,7 @@ export default function ISOOSIPresentation() {
           </div>
         );
 
-      case 9: // L5-L6-L7 Up
+      case 10: // L5-L6-L7 Up
         return (
           <div className="h-full flex flex-col">
             <div className="flex items-center gap-4 mb-6">
@@ -1593,7 +1750,7 @@ export default function ISOOSIPresentation() {
           </div>
         );
 
-      case 10: // Summary
+      case 11: // Summary
         return (
           <div className="h-full flex flex-col">
             <div className="flex items-center justify-center gap-4 mb-6">
@@ -1720,7 +1877,7 @@ export default function ISOOSIPresentation() {
           </div>
         );
 
-      case 11: // Appendix - Intro TCP Fragmentation
+      case 12: // Appendix - Intro TCP Fragmentation
         return (
           <div className="h-full flex flex-col">
             <div className="flex items-center gap-4 mb-6">
@@ -1758,6 +1915,18 @@ export default function ISOOSIPresentation() {
                   <p className="text-orange-300 text-base lg:text-xl">
                     <strong>💡 Curiosità:</strong> Il sequence number è un intero a 32 bit, quindi può contare fino a ~4 GB prima di "ricominciare" (wrap-around).
                   </p>
+                </div>
+
+                <div>
+                  <h4 className="text-xl lg:text-2xl font-bold text-purple-400 mb-3">🗜️ E la Compressione?</h4>
+                  <p className="mb-3">Prima della segmentazione TCP, WhatsApp comprime le immagini a <strong>Livello 7 (Applicazione)</strong>:</p>
+                  <ul className="list-disc list-inside space-y-2 text-base lg:text-xl">
+                    <li><strong>Foto originale:</strong> 5 MB (dal sensore della fotocamera)</li>
+                    <li><strong>Compressione JPEG:</strong> Riduzione qualità + ridimensionamento → ~150 KB</li>
+                    <li><strong>Poi cifratura E2E:</strong> I 150 KB vengono cifrati con Signal Protocol</li>
+                    <li><strong>Infine segmentazione:</strong> I dati cifrati vengono divisi in ~106 pacchetti TCP</li>
+                  </ul>
+                  <p className="mt-3 text-gray-400">La compressione avviene PRIMA della cifratura perché i dati cifrati appaiono casuali e non sono comprimibili.</p>
                 </div>
               </div>
             </InfoModal>
@@ -1831,7 +2000,7 @@ export default function ISOOSIPresentation() {
           </div>
         );
 
-      case 12: // Appendix - Packet Transmission Animation
+      case 13: // Appendix - Packet Transmission Animation
         return (
           <div className="h-full flex flex-col">
             <div className="flex items-center gap-4 mb-6">
@@ -1980,7 +2149,7 @@ export default function ISOOSIPresentation() {
           </div>
         );
 
-      case 13: // Appendix - Image Reconstruction
+      case 14: // Appendix - Image Reconstruction
         return (
           <div className="h-full flex flex-col">
             <div className="flex items-center gap-4 mb-6">
@@ -2120,7 +2289,7 @@ export default function ISOOSIPresentation() {
           </div>
         );
 
-      case 14: // Appendix - Technical Summary
+      case 15: // Appendix - Technical Summary
         return (
           <div className="h-full flex flex-col">
             <div className="flex items-center gap-4 mb-6">
@@ -2270,7 +2439,7 @@ export default function ISOOSIPresentation() {
           </div>
         );
 
-      case 15: // End
+      case 16: // End
         return (
           <div className="flex flex-col items-center justify-center h-full text-center">
             <div className="text-9xl mb-8">🎓</div>
